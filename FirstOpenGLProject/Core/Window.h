@@ -1,9 +1,13 @@
+#pragma once
+
 #include <string>
 #include <iostream>
 
-#include <glfw/glfw3.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-//#include <glad/glad.h>
+
+#include "Camera.h"
 
 
 class Window 
@@ -14,11 +18,16 @@ public:
 	void update();
 	glm::vec2 getDimensions();
 	GLFWwindow* getWindow();
+	void swapBuffers();
+	void pollEvents();
+	void setWindowScrollCallBack(Camera* camera);
+	float getAspect();
+	float getTime();
 
-
+	
 private:
 	int m_width, m_height;
-	GLFWwindow* window = nullptr;
+	GLFWwindow* m_window = nullptr;
 	
 
 };

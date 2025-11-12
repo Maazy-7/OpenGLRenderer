@@ -9,6 +9,7 @@
 #include <vector>
 #include <random>
 
+
 #include "util.h"
 #include "Shader.h"
 #include "Camera.h"
@@ -174,6 +175,7 @@ int main()
     std::default_random_engine generator;
     std::vector<glm::vec3> ssaoKernel;
     ssaoKernel.reserve(64);
+
     for (int i = 0; i < 64; i++) 
     {
         glm::vec3 sample(randomFloats(generator) * 2.0f - 1.0f, randomFloats(generator) * 2.0f - 1.0f, randomFloats(generator));
@@ -212,11 +214,13 @@ int main()
     glm::vec3 lightPos = glm::vec3(0.f, 1.5f, 0.2f);
     glm::mat4 model2 = glm::translate(glm::mat4(1.f), lightPos) * glm::scale(glm::mat4(1.f), glm::vec3(0.25f));
 
+    
+
     unsigned int brickNormalMap = loadTexture("Assets/brickwallNormalMap.jpg");
     unsigned int crateDiffuse = loadTexture("Assets/container2.jpg");
     unsigned int crateSpec = loadTexture("Assets/containerFrame.jpg");
-    unsigned int backPackDiffuse = loadTexture("backpack/diffuse.jpg");
-    unsigned int backPackSpecular = loadTexture("backpack/specular.jpg");
+    //unsigned int backPackDiffuse = loadTexture("backpack/diffuse.jpg");
+    //unsigned int backPackSpecular = loadTexture("backpack/specular.jpg");
 
     Model ourModel("Assets/brickThingy.obj");
     Model guy("Assets/guy.obj");
@@ -225,13 +229,25 @@ int main()
     ourModel.addTexture(brickNormalMap, normalMap, 0);
     ourModel.addTexture(crateDiffuse, diffuse, 0);
     ourModel.addTexture(crateSpec, specular, 0);
-    //backpack.addTexture(backPackDiffuse, diffuse, 0);
-    //backpack.addTexture(backPackSpecular, specular, 0);
-
-    //backpack.addTexture(crateDiffuse, diffuse, 0);
 
     GameObject g1(glm::vec3(-2.f,-0.3f,-4.f), &guy, &camera);
     GameObject g2(glm::vec3(2.f,0.2f,0.f), &ourModel, &camera);
+
+    GameObject wall1(glm::vec3(7.5f, 1.8f, 0.f), &ourModel, &camera);
+    wall1.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
+    wall1.isStatic = true;
+
+    GameObject wall2(glm::vec3(-7.5f, 1.8f, 0.f), &ourModel, &camera);
+    wall2.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
+    wall2.isStatic = true;
+
+    GameObject wall3(glm::vec3(0.0f, 1.8f, 7.5f), &ourModel, &camera);
+    wall3.setScale(glm::vec3(7.5f, 3.5f, 0.2f));
+    wall3.isStatic = true;
+
+    GameObject wall4(glm::vec3(7.5f, 1.8f, 0.f), &ourModel, &camera);
+    wall4.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
+    wall4.isStatic = true;
 
     g1.rotate(glm::vec3(0.f, 0.f, -3.14f/2.f));
     g1.scale(glm::vec3(0.4f));
@@ -244,6 +260,10 @@ int main()
     objects.push_back(&g1);
     objects.push_back(&g2);
     objects.push_back(&floor);
+    objects.push_back(&wall1);
+    objects.push_back(&wall2);
+    objects.push_back(&wall3);
+    objects.push_back(&wall4);
 
     CollisionManifold collisionInfo;
     //cubePos = g1.getPosition();
@@ -537,7 +557,7 @@ int main()
         deferredLightingPass.setMatrix4f("viewMat", *camera.getView());
         deferredLightingPass.setInt("ssaoOn", hdr);
         //light uniforms
-        for (int i = 0; i < 4; i++) 
+        for (int i = 0; i < 1; i++) 
         {
             deferredLightingPass.setVec3("lights[" + std::to_string(i) + "].position", lightPositions[i]);
             deferredLightingPass.setVec3("lights[" + std::to_string(i) + "].color", lightColors[i]);
@@ -560,7 +580,7 @@ int main()
         singleColorShader.use();
         singleColorShader.setMatrix4f("view", *camera.getView());
         singleColorShader.setMatrix4f("projection", *camera.getProjection());
-        for (int i = 0; i < 4; i++) 
+        for (int i = 0; i < 1; i++) 
         {
             singleColorShader.setMatrix4f("model", glm::translate(glm::mat4(1.f), lightPositions[i]) * glm::scale(glm::mat4(1.f), glm::vec3(0.2f)));
             singleColorShader.setVec3("color", lightColors[i]);
@@ -571,7 +591,7 @@ int main()
         quadShader.use();
         glActiveTexture(GL_TEXTURE0);
         ssaoColorBuffer.bind();
-        renderQuad(glm::vec2());
+        renderQuad();
         glEnable(GL_DEPTH_TEST);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

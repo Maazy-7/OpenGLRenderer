@@ -143,7 +143,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Rendering\GeometryPass.cpp" />
+    <ClCompile Include="Rendering\LightingPass.cpp" />
+    <ClCompile Include="Rendering\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -160,13 +164,20 @@
     <ClCompile Include="Physics\Components\Transform.cpp" />
     <ClCompile Include="Physics\Core\DynamicsSolver.cpp" />
     <ClCompile Include="Physics\Core\PhysicsEngine.cpp" />
+    <ClCompile Include="Rendering\Renderer.cpp" />
+    <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Rendering\ShadowPass.cpp" />
+    <ClCompile Include="Rendering\ShadowCaster.cpp" />
     <ClCompile Include="stb_image.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
+    <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Rendering\GeometryPass.h" />
+    <ClInclude Include="Rendering\LightingPass.h" />
+    <ClInclude Include="Rendering\Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="OpenGLObjects\Cubemap.h" />
@@ -182,9 +193,14 @@
     <ClInclude Include="Physics\Components\Transform.h" />
     <ClInclude Include="Physics\Core\DynamicsSolver.h" />
     <ClInclude Include="Physics\Core\PhysicsEngine.h" />
+    <ClInclude Include="Rendering\Renderer.h" />
+    <ClInclude Include="Core\Scene.h" />
+    <ClInclude Include="settings.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Rendering\ShadowPass.h" />
+    <ClInclude Include="Rendering\ShadowCaster.h" />
     <ClInclude Include="util.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="Core\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\blur.frag" />

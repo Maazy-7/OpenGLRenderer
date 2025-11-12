@@ -42,7 +42,7 @@ void addUniqueEdge(std::vector<std::pair<size_t, size_t>>& edges, const std::vec
 
 #define GJK_EPA_MAX_ITERATIONS 32
 
-//GJK and EPA algorithm implementation from https://winter.dev/articles/gjk-algorithm
+
 std::pair<Simplex, bool> GJK(CubeCollider* colliderA, CubeCollider* colliderB);
 std::pair<Simplex, bool> GJK(Collider* colliderA, Collider* colliderB);
 CollisionManifold EPA(Simplex simplex, CubeCollider* colliderA, CubeCollider* colliderB);
