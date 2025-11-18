@@ -26,7 +26,24 @@ A Physics folder exists for an in-development physics engine.
   - Bloom effect
 
 - **Screen Space Ambient Occlusion (SSAO)**
-  - View-space position and normal reconstruction
+  - View-space position and normal reconstructionthe 
   - Configurable sample kernel and noise textures
 
 ## Lighting and Shadows
+### Multiple Lights
+<img width="1918" height="1085" alt="4 Lights" src="https://github.com/user-attachments/assets/cceda474-ac5e-4941-9639-495891f399ab" />
+
+### Shadows and SSAO
+<img width="1910" height="1078" alt="1 Light 4 Walls" src="https://github.com/user-attachments/assets/a72036d0-8c7c-480f-b250-a4ba1abcfcdf" />
+
+### SSAO texture
+<img width="1914" height="1078" alt="SSAO texture" src="https://github.com/user-attachments/assets/17897210-14c9-464c-a7e1-30fd36d94d4f" />
+
+# Next Steps
+- Implement PBR lighting model
+- Upgrade OpenGL version to 4.5+
+- Add support for Compute Shaders
+- Implement occlusion and frustum culling for further optomization
+- Implement Multithreaded rendering
+- Add support for transparent objects in deferred pipeline
+- Add support for anti aliasing in deferred pipeline
