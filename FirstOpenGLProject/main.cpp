@@ -395,7 +395,7 @@ int main()
         */
 
         //point shadow
-        glm::mat4 shadowProjection = glm::perspective(glm::radians(90.0f), ASPECT, nearPlane, farPlane);//aka light projection but for point shadows, since point light projection should be a perspective one
+        glm::mat4 shadowProjection = glm::perspective(glm::radians(90.0f), (float)(SHADOW_WIDTH / SHADOW_HEIGHT), nearPlane, farPlane);//aka light projection but for point shadows, since point light projection should be a perspective one
         std::array<glm::mat4, 6> shadowTransforms = { glm::mat4(1.f) };
         //shadow's matrix for each face of the cubemap, essentially the same as the lightSpaceMatrix
         shadowTransforms[0] = shadowProjection * glm::lookAt(lightPositions[0], lightPositions[0] + glm::vec3( 1.0f, 0.0f, 0.0f), glm::vec3( 0.0f,-1.0f, 0.0f));
@@ -591,7 +591,7 @@ int main()
         quadShader.use();
         glActiveTexture(GL_TEXTURE0);
         ssaoColorBuffer.bind();
-        renderQuad();
+        renderQuad(glm::vec2());
         glEnable(GL_DEPTH_TEST);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

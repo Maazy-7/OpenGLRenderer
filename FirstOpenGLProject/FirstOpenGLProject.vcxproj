@@ -175,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="OpenGLObjects\TextureBase.h" />
     <ClInclude Include="Rendering\GeometryPass.h" />
     <ClInclude Include="Rendering\LightingPass.h" />
     <ClInclude Include="Rendering\Light.h" />

@@ -1,6 +1,6 @@
 #include "LightingPass.h"
 
-LightingPass::LightingPass(Shader* shader)
+LightingPass::LightingPass(std::shared_ptr<Shader> shader)
 	: m_lightingShader(shader)
 {
 
@@ -8,5 +8,5 @@ LightingPass::LightingPass(Shader* shader)
 
 void LightingPass::execute(const std::vector<std::unique_ptr<GameObject>>&) 
 {
-
+	
 }

@@ -11,17 +11,23 @@ Application::Application()
 
 void Application::run() 
 {
-	float dt = getDeltaTime();
+	while (!m_window->windowClose())
+	{
+		if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)//temporary
+			glfwSetWindowShouldClose(m_window->getWindow(), true);
 
-	m_window->pollEvents();
+		float dt = getDeltaTime();
 
-	//input checker here
+		m_window->pollEvents();
 
-	m_physicsEngine->step(dt);
+		//input checker here
 
-	m_renderer->update(m_scene.get());
+		m_physicsEngine->step(dt);
 
-	m_window->swapBuffers();
+		m_renderer->update(m_scene.get());
+
+		m_window->swapBuffers();
+	}
 }
 
 float Application::getDeltaTime() 

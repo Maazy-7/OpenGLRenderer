@@ -188,6 +188,9 @@
     <ClInclude Include="Rendering\ShadowCaster.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="OpenGLObjects\TextureBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\blur.frag" />

@@ -22,9 +22,9 @@ Texture2D::Texture2D(GLenum internalFomrat, int width, int height, GLenum format
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-unsigned int Texture2D::getID() { return m_texture; }
+unsigned int Texture2D::getID() const { return m_texture; }
 
-void Texture2D::bind() { glBindTexture(GL_TEXTURE_2D, m_texture); }
+void Texture2D::bind() const { glBindTexture(GL_TEXTURE_2D, m_texture); }
 void Texture2D::unbind() { glBindTexture(GL_TEXTURE_2D, 0); }
 
 GLint Texture2D::getInternalFormat() 

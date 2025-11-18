@@ -9,10 +9,10 @@
 class LightingPass
 {
 public:
-	LightingPass(Shader* shader);
+	LightingPass(std::shared_ptr<Shader> shader);
 	void execute(const std::vector<std::unique_ptr<GameObject>>&);
 
 private:
-	Shader* m_lightingShader;
+	std::shared_ptr<Shader> m_lightingShader;
 };
 

@@ -35,7 +35,7 @@ class Mesh
 {
 	unsigned int m_VAO, m_VBO, m_EBO;
 	//std::vector<float> m_vertices;
-	int m_faces;
+	//int m_faces;
 	std::vector<Vertex> m_vertices_;
 	std::vector<unsigned int> m_indices;
 	std::vector<Texture> m_textures;

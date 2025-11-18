@@ -23,6 +23,7 @@ public:
 	void setWindowScrollCallBack(Camera* camera);
 	float getAspect();
 	float getTime();
+	bool windowClose();
 
 	
 private:

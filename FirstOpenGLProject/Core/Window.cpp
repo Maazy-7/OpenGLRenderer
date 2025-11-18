@@ -74,3 +74,5 @@ void Window::setWindowScrollCallBack(Camera* camera)
 		camera->scroll_callback(window, xoffset, yoffset);
 		});
 }
+
+bool Window::windowClose() { return glfwWindowShouldClose(m_window); }

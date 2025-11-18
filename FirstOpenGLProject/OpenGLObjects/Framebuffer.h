@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 
+#include "OpenGLObjects/TextureBase.h"
 #include "OpenGLObjects/Texture2D.h"
 #include "OpenGLObjects/Cubemap.h"
 
@@ -16,6 +17,7 @@ public:
 
 	Framebuffer();
 	Framebuffer(Texture2D tex, GLenum texAttachment);
+	Framebuffer(TextureBase* tex, GLenum texAttachment);
 	Framebuffer(std::vector<Texture2D> textures, GLenum attachment);
 	Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments);
 
@@ -23,11 +25,14 @@ public:
 	Framebuffer(std::vector<Texture2D> textures, GLenum texAttachment, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(Cubemap tex);
+	Framebuffer(TextureBase* tex);
 
 	void attachTexture(Texture2D tex, GLenum texAttachment);
+	void attachTexture(TextureBase* tex, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments);
 	void attachTexture(Cubemap tex);
+	void attachTexture(TextureBase* tex);
 	void attachRenderbuffer();
 
 	void bind();

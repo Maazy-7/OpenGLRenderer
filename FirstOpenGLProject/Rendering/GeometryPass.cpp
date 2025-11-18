@@ -1,6 +1,6 @@
 #include "GeometryPass.h"
 
-GeometryPass::GeometryPass(Shader* shader)
+GeometryPass::GeometryPass(std::shared_ptr<Shader> shader)
 	: m_geometryShader(shader)
 {
 

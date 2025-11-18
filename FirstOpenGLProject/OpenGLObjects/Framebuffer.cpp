@@ -14,6 +14,14 @@ Framebuffer::Framebuffer(Texture2D tex, GLenum texAttachment)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+Framebuffer::Framebuffer(TextureBase* tex, GLenum texAttachment)
+{
+	glGenFramebuffers(1, &m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+	attachTexture(tex, texAttachment);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 Framebuffer::Framebuffer(std::vector<Texture2D> textures, GLenum attachment)
 {
@@ -36,6 +44,15 @@ Framebuffer::Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> te
 }
 
 Framebuffer::Framebuffer(Cubemap tex)
+{
+	glGenFramebuffers(1, &m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+	attachTexture(tex);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+Framebuffer::Framebuffer(TextureBase* tex)
 {
 	glGenFramebuffers(1, &m_FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
@@ -114,6 +131,18 @@ void Framebuffer::attachTexture(Texture2D tex, GLenum texAttachment)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void Framebuffer::attachTexture(TextureBase* tex, GLenum texAttachment)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, texAttachment, GL_TEXTURE_2D, tex->getID(), 0);
+	if (texAttachment == GL_DEPTH_ATTACHMENT)
+	{
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 void Framebuffer::attachTextures(std::vector<Texture2D> textures, GLenum texAttachment) 
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
@@ -158,6 +187,15 @@ void Framebuffer::attachTexture(Cubemap tex)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tex.getID(), 0);//FOR NOW GL_DEPTH_ATTACHMENT, SHOULD BE CUSTOM LATER
+	glDrawBuffer(GL_NONE);//read and draw buffers should also be customizable
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::attachTexture(TextureBase* tex)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tex->getID(), 0);//FOR NOW GL_DEPTH_ATTACHMENT, SHOULD BE CUSTOM LATER
 	glDrawBuffer(GL_NONE);//read and draw buffers should also be customizable
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

@@ -9,10 +9,10 @@
 class GeometryPass
 {
 public:
-	GeometryPass(Shader* shader);
+	GeometryPass(std::shared_ptr<Shader> shader);
 	void execute(const std::vector<std::unique_ptr<GameObject>>&);
 
 private:
-	Shader* m_geometryShader;
+	std::shared_ptr<Shader> m_geometryShader;
 };
 
