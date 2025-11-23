@@ -118,6 +118,24 @@ Framebuffer::Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> te
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+Framebuffer::Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600) 
+{
+	//creates render buffer that attaches to the framebuffer
+	glGenFramebuffers(1, &m_FBO);
+	glGenRenderbuffers(1, &m_RBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, renderBufferInternalFormat, width, height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderBufferAttachment, GL_RENDERBUFFER, m_RBO);
+
+	attachTextures(textures, texAttachments);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) { std::cout << "Framebuffer not complete!" << std::endl; }
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void Framebuffer::attachTexture(Texture2D tex, GLenum texAttachment)
 {
@@ -171,6 +189,25 @@ void Framebuffer::attachTextures(std::vector<Texture2D> textures, std::vector<GL
 	for (int i = 0; i < textures.size(); i++)
 	{
 		glFramebufferTexture2D(GL_FRAMEBUFFER, texAttachments[i], GL_TEXTURE_2D, textures[i].getID(), 0);
+	}
+
+	glDrawBuffers(textures.size(), texAttachments.data());//framebuffer will render to multiple textures
+
+	if (texAttachments[0] == GL_DEPTH_ATTACHMENT)
+	{
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::attachTextures(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+
+	for (int i = 0; i < textures.size(); i++)
+	{
+		glFramebufferTexture2D(GL_FRAMEBUFFER, texAttachments[i], GL_TEXTURE_2D, textures[i]->getID(), 0);
 	}
 
 	glDrawBuffers(textures.size(), texAttachments.data());//framebuffer will render to multiple textures

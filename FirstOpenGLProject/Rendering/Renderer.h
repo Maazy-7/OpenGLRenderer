@@ -13,14 +13,22 @@
 class Renderer 
 {
 public:
-	Renderer();
+	Renderer(int screenWidth, int screenHeight);
 	void update(Scene* scene);
 	std::shared_ptr<Shader> getShader(std::string name);
+	void bindGBuffer();
+	void unBindGBuffer();
+	void bindGBufferTextures();
 
 private:
+	int m_screenWidth, m_screenHeight;
 	std::unordered_map<std::string, std::shared_ptr<Shader>> m_shaders;
 	std::unique_ptr<ShadowPass> m_shadowPass;
 	std::unique_ptr<GeometryPass> m_geometryPass;
 	std::unique_ptr<LightingPass> m_lightingPass;
+	std::unique_ptr<Framebuffer> m_gBuffer;
+	std::unique_ptr<Texture2D> m_gPosition;
+	std::unique_ptr<Texture2D> m_gNormal;
+	std::unique_ptr<Texture2D> m_gAlbedoSpec;
 	void LoadShaders();
 };

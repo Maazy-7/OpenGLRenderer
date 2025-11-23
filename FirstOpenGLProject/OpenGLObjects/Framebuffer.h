@@ -24,6 +24,7 @@ public:
 	Framebuffer(Texture2D tex, GLenum texAttachment, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(std::vector<Texture2D> textures, GLenum texAttachment, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
+	Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(Cubemap tex);
 	Framebuffer(TextureBase* tex);
 
@@ -31,6 +32,7 @@ public:
 	void attachTexture(TextureBase* tex, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments);
+	void attachTextures(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments);
 	void attachTexture(Cubemap tex);
 	void attachTexture(TextureBase* tex);
 	void attachRenderbuffer();
