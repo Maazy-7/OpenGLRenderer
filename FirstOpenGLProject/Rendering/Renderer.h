@@ -9,6 +9,9 @@
 #include "Rendering/GeometryPass.h"
 #include "Rendering/LightingPass.h"
 #include "Core/Scene.h"
+#include "OpenGLObjects/Framebuffer.h"
+#include "OpenGLObjects/Texture2D.h"
+#include "OpenGLObjects/UniformBuffer.h"
 
 class Renderer 
 {
@@ -30,5 +33,6 @@ private:
 	std::unique_ptr<Texture2D> m_gPosition;
 	std::unique_ptr<Texture2D> m_gNormal;
 	std::unique_ptr<Texture2D> m_gAlbedoSpec;
+	std::unique_ptr<UniformBuffer> m_matricesUBO;
 	void LoadShaders();
 };

@@ -382,6 +382,7 @@ int main()
         glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), camera.getView());
         glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), camera.getProjection());
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         float nearPlane = 0.1f, farPlane = 25.0f;
 

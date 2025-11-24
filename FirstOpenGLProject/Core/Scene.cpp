@@ -24,6 +24,22 @@ Scene::Scene(Window* window)
 	m_gameObjects[2]->isStatic = true;
 }
 
+void Scene::update(float dt) 
+{
+	//currently not much but camera needs to be updated
+	m_camera->update(dt);
+}
+
+glm::mat4* Scene::getCameraViewMatrix() 
+{
+	return m_camera->getView();
+}
+
+glm::mat4* Scene::getCameraProjectionMatrix() 
+{
+	return m_camera->getProjection();
+}
+
 std::vector<std::unique_ptr<Light>>& Scene::getLights() 
 {
 	return m_lights;

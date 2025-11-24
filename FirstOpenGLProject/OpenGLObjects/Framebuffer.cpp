@@ -118,7 +118,7 @@ Framebuffer::Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> te
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-Framebuffer::Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600) 
+Framebuffer::Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width, int height) 
 {
 	//creates render buffer that attaches to the framebuffer
 	glGenFramebuffers(1, &m_FBO);

@@ -22,6 +22,9 @@ public:
 	std::vector<std::unique_ptr<ShadowCaster>>& getShadowCasters();
 	std::vector<std::unique_ptr<GameObject>>& getGameObjects();
 	void createLight(glm::vec3 position, glm::vec4 colorAndType, bool castShadows = false);
+	void update(float dt);
+	glm::mat4* getCameraViewMatrix();
+	glm::mat4* getCameraProjectionMatrix();
 
 private:
 	std::unique_ptr<Camera> m_camera;

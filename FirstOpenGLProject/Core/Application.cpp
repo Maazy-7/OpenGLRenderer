@@ -22,6 +22,8 @@ void Application::run()
 
 		//input checker here
 
+		m_scene->update(dt);
+
 		m_physicsEngine->step(dt);
 
 		m_renderer->update(m_scene.get());

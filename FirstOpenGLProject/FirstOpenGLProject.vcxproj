@@ -171,6 +171,7 @@
     <ClCompile Include="Rendering\ShadowCaster.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Core\Window.cpp" />
+    <ClCompile Include="OpenGLObjects\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Rendering\ShadowPass.h" />
     <ClInclude Include="Rendering\ShadowCaster.h" />
+    <ClInclude Include="OpenGLObjects\UniformBuffer.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Core\Window.h" />
   </ItemGroup>

@@ -8,12 +8,16 @@ Renderer::Renderer(int screenWidth, int screenHeight)
     m_geometryPass = std::make_unique<GeometryPass>(m_shaders["deferredGeometryPass"]);
     m_lightingPass = std::make_unique<LightingPass>(m_shaders["deferredLightingPass"]);
 
+    //matrices uniform buffer
+    m_matricesUBO = std::make_unique<UniformBuffer>(0, 2 * sizeof(glm::mat4), (const void*)0, GL_DYNAMIC_DRAW);
+    m_matricesUBO->setShaderToUniform(*m_shaders["deferredGeometryPass"], "Matrices");
+
     //set up gBuffer
     m_gPosition = std::make_unique<Texture2D>(GL_RGBA16F, m_screenWidth, m_screenHeight, GL_RGBA); //(x,y,z) position
     m_gPosition->setTexFilterParametersi(GL_NEAREST, GL_NEAREST);
     m_gNormal = std::make_unique<Texture2D>(GL_RGBA16F, m_screenWidth, m_screenHeight, GL_RGBA); //(x,y,z) normal
     m_gNormal->setTexFilterParametersi(GL_NEAREST, GL_NEAREST);
-    m_gAlbedoSpec = std::make_unique<Texture2D>(GL_RGBA, m_screenWidth, m_screenHeight, GL_RGBA, 0, GL_UNSIGNED_BYTE); //(r,g,b, a) diffuse and specular
+    m_gAlbedoSpec = std::make_unique<Texture2D>(GL_RGBA, m_screenWidth, m_screenHeight, GL_RGBA, (const void*)0, GL_UNSIGNED_BYTE); //(r,g,b, a) diffuse and specular
     
     //temporary lists since since std::make_unique cant pass initializer lists to framebuffer constructor, should modify framebuffer constructor
     std::vector<Texture2D> list = { *m_gPosition, *m_gNormal, *m_gAlbedoSpec};
@@ -24,6 +28,11 @@ Renderer::Renderer(int screenWidth, int screenHeight)
 
 void Renderer::update(Scene* scene) 
 {
+    //setting Matrices uniform buffer object data
+    m_matricesUBO->setUniformSubData(0, sizeof(glm::mat4), scene->getCameraViewMatrix());
+    m_matricesUBO->setUniformSubData(sizeof(glm::mat4), sizeof(glm::mat4), scene->getCameraProjectionMatrix());
+
+    //executing render passes
     m_shadowPass->execute(scene->getGameObjects(), scene->getShadowCastingLights(), scene->getShadowCasters());
     bindGBuffer();
     m_geometryPass->execute(scene->getGameObjects());//TODO make UBO object to assign view and projection matrices to the geometry shader
