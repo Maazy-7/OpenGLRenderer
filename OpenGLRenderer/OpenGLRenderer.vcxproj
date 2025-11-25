@@ -145,6 +145,7 @@
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Rendering\QuadRenderer.cpp" />
     <ClCompile Include="Rendering\GeometryPass.cpp" />
     <ClCompile Include="Rendering\LightingPass.cpp" />
     <ClCompile Include="Rendering\Light.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="OpenGLObjects\TextureBase.h" />
+    <ClInclude Include="Rendering\QuadRenderer.h" />
     <ClInclude Include="Rendering\GeometryPass.h" />
     <ClInclude Include="Rendering\LightingPass.h" />
     <ClInclude Include="Rendering\Light.h" />

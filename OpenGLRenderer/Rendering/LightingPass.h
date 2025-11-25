@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Shader.h"
+#include "Rendering/QuadRenderer.h"
 #include "Physics/Components/GameObject.h"
 
 class LightingPass
@@ -14,5 +15,6 @@ public:
 
 private:
 	std::shared_ptr<Shader> m_lightingShader;
+	std::unique_ptr<QuadRenderer> m_LightPassQuad;
 };
 
