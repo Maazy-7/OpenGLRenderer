@@ -22,12 +22,23 @@ Scene::Scene(Window* window)
 
 	m_gameObjects[2]->setScale(glm::vec3(7.5f, 0.2f, 7.5f));
 	m_gameObjects[2]->isStatic = true;
+	createLight(glm::vec3(1.f, 2.f, 1.f), glm::vec4(1.f,1.f,1.f,0.f)*3.f, true);
 }
 
 void Scene::update(float dt) 
 {
 	//currently not much but camera needs to be updated
 	m_camera->update(dt);
+	
+	for (size_t i = 0; i < m_gameObjects.size(); i++) 
+	{
+		m_gameObjects[i]->update(dt);
+	}
+}
+
+Camera* Scene::getCamera() 
+{
+	return m_camera.get();
 }
 
 glm::mat4* Scene::getCameraViewMatrix() 
@@ -45,7 +56,7 @@ std::vector<std::unique_ptr<Light>>& Scene::getLights()
 	return m_lights;
 }
 
-std::vector<Light*>& Scene::getShadowCastingLights()
+std::vector<Light*> Scene::getShadowCastingLights()
 {
 	std::vector<Light*> shadowCastingLights;
 	for (size_t i = 0; i < m_lights.size(); i++) 

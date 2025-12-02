@@ -16,6 +16,12 @@ Cubemap::Cubemap(GLenum format, int width, int height)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+Cubemap::~Cubemap() 
+{
+	//glDeleteTextures(1, &m_cubeMap);
+	std::cout << "Cubemap Destroyed\n";
+}
+
 unsigned int Cubemap::getID() const { return m_cubeMap; }
 
 void Cubemap::bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubeMap); }

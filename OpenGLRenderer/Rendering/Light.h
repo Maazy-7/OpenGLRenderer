@@ -9,6 +9,7 @@ public:
 	int getLightType();
 	bool castShadows();
 	glm::vec3 getPos();
+	glm::vec3 getColor();
 	void setShadowCastIndex(int index);
 	int getShadowCastIndex();
 	

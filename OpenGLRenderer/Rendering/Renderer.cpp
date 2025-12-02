@@ -20,24 +20,34 @@ Renderer::Renderer(int screenWidth, int screenHeight)
     m_gAlbedoSpec = std::make_unique<Texture2D>(GL_RGBA, m_screenWidth, m_screenHeight, GL_RGBA, (const void*)0, GL_UNSIGNED_BYTE); //(r,g,b, a) diffuse and specular
     
     //temporary lists since since std::make_unique cant pass initializer lists to framebuffer constructor, should modify framebuffer constructor
-    std::vector<Texture2D> list = { *m_gPosition, *m_gNormal, *m_gAlbedoSpec};
+    std::vector<Texture2D*> list = { m_gPosition.get(), m_gNormal.get(), m_gAlbedoSpec.get()};
     std::vector<GLenum> attachments = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 
     m_gBuffer = std::make_unique<Framebuffer>(list, attachments, GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, screenWidth, screenHeight);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::update(Scene* scene) 
 {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
     //setting Matrices uniform buffer object data
     m_matricesUBO->setUniformSubData(0, sizeof(glm::mat4), scene->getCameraViewMatrix());
     m_matricesUBO->setUniformSubData(sizeof(glm::mat4), sizeof(glm::mat4), scene->getCameraProjectionMatrix());
 
     //executing render passes
     m_shadowPass->execute(scene->getGameObjects(), scene->getShadowCastingLights(), scene->getShadowCasters());
+    
     bindGBuffer();
-    m_geometryPass->execute(scene->getGameObjects());//TODO make UBO object to assign view and projection matrices to the geometry shader
+    m_geometryPass->execute(scene->getGameObjects());
     unBindGBuffer();
-    m_lightingPass->execute(scene->getGameObjects());
+    
+    m_lightingPass->useLightingShader();
+    bindGBufferTextures();
+    glActiveTexture(GL_TEXTURE3);
+    /*temp*/scene->getShadowCasters()[0]->bindShadowMap();
+    m_lightingPass->execute(scene->getLights(), scene->getCamera());
 }
 
 void Renderer::LoadShaders() 

@@ -14,6 +14,7 @@ class Window
 {
 public:
 	Window(int width, int height, std::string name = "App");
+	~Window();
 
 	void update();
 	glm::vec2 getDimensions();
@@ -29,6 +30,6 @@ public:
 private:
 	int m_width, m_height;
 	GLFWwindow* m_window = nullptr;
-	
+
 
 };

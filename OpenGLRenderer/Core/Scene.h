@@ -18,13 +18,14 @@ class Scene
 public:
 	Scene(Window* window);
 	std::vector<std::unique_ptr<Light>>& getLights();
-	std::vector<Light*>& getShadowCastingLights();
+	std::vector<Light*> getShadowCastingLights();
 	std::vector<std::unique_ptr<ShadowCaster>>& getShadowCasters();
 	std::vector<std::unique_ptr<GameObject>>& getGameObjects();
 	void createLight(glm::vec3 position, glm::vec4 colorAndType, bool castShadows = false);
 	void update(float dt);
 	glm::mat4* getCameraViewMatrix();
 	glm::mat4* getCameraProjectionMatrix();
+	Camera* getCamera();
 
 private:
 	std::unique_ptr<Camera> m_camera;

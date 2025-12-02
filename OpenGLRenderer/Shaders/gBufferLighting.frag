@@ -22,6 +22,7 @@ struct Light
 
 #define N_LIGHTS 4
 uniform Light lights[N_LIGHTS];
+uniform int lightCount = 1;
 
 uniform vec3 viewPos;
 uniform mat4 viewMat;
@@ -54,16 +55,16 @@ void main()
 	}
 
 	if (ssaoOn) { ambientOcclusion = 1.0; }
-	vec3 lighting = vec3(0.8,0.2,0.2) * 0.3 * ambientOcclusion;
+	vec3 lighting = vec3(0.8,0.0,0.0) * 0.3;// * ambientOcclusion;
 	vec3 viewDir = normalize(viewPos - FragPos);
 
-	for (int i = 0; i < N_LIGHTS; i++) 
+	for (int i = 0; i < lightCount || i < N_LIGHTS; i++) 
 	{
 		Light light = lights[i];
 		light.position = vec3(viewMat * vec4(light.position,1.0));//setting light position to view space
 		//diffuse
 		vec3 lightDir = normalize(light.position - FragPos);
-		vec3 diffuse = max(dot(Normal, lightDir), 0.0) * vec3(0.8,0.2,0.2) * light.color;
+		vec3 diffuse = max(dot(Normal, lightDir), 0.0) * vec3(0.8,0.0,0.0) * light.color;
 		//specular
 		vec3 halfwayDir = normalize(lightDir + viewDir);
 		vec3 specular = pow(max(dot(Normal, halfwayDir),0),32) * 1.0 * light.color;
@@ -72,8 +73,7 @@ void main()
 		float attenuation = 1.0 / (1.0 + light.linear * Distance + light.quadratic * Distance * Distance);
 		diffuse *= attenuation;
 		specular *= attenuation;
-		float n = max(0,1-2*i);
-		float shadow = n*calculateShadowCubeMap(FragPos, lights[i].position);
+		float shadow = calculateShadowCubeMap(FragPos, lights[i].position);
 		lighting += (1.0-shadow)*(diffuse + specular);
 	}
 

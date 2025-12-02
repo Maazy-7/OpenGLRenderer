@@ -17,7 +17,7 @@ private:
 	Rigidbody m_rigidbody;
 	CubeCollider m_collider;
 	Collider* M_collider;
-	Model m_model;
+	Model* m_model;
 	Camera* m_camera;
 public:
 
@@ -34,7 +34,7 @@ public:
 	Transform& transform();
 	Rigidbody& rigidbody();
 	CubeCollider& collider();
-	Model& model();
+	Model* model();
 
 	void attachCamera(Camera* camera);
 	void update(float dt);

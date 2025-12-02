@@ -5,7 +5,7 @@ Framebuffer::Framebuffer()
 	glGenFramebuffers(1, &m_FBO);
 }
 
-Framebuffer::Framebuffer(Texture2D tex, GLenum texAttachment)
+Framebuffer::Framebuffer(Texture2D& tex, GLenum texAttachment)
 {
 	glGenFramebuffers(1, &m_FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
@@ -43,7 +43,7 @@ Framebuffer::Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> te
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-Framebuffer::Framebuffer(Cubemap tex)
+Framebuffer::Framebuffer(Cubemap& tex)
 {
 	glGenFramebuffers(1, &m_FBO);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
@@ -137,7 +137,14 @@ Framebuffer::Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> t
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::attachTexture(Texture2D tex, GLenum texAttachment)
+Framebuffer::~Framebuffer() 
+{
+	//glDeleteRenderbuffers(1, &m_RBO);
+	//glDeleteFramebuffers(1, &m_FBO);
+	std::cout << "Framebuffer Destroyed\n";
+}
+
+void Framebuffer::attachTexture(Texture2D& tex, GLenum texAttachment)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, texAttachment, GL_TEXTURE_2D, tex.getID(), 0);
@@ -220,7 +227,7 @@ void Framebuffer::attachTextures(std::vector<Texture2D*> textures, std::vector<G
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::attachTexture(Cubemap tex)
+void Framebuffer::attachTexture(Cubemap& tex)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, tex.getID(), 0);//FOR NOW GL_DEPTH_ATTACHMENT, SHOULD BE CUSTOM LATER

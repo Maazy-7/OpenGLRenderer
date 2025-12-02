@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <glad/glad.h>
 #include "OpenGLObjects/TextureBase.h"
 
@@ -11,6 +12,7 @@ public:
 	
 	Texture2D(GLenum internalFormat, int width, int height, GLenum format = 0, const void* pixels = 0, GLenum type = GL_FLOAT, float borderColor[4] = { 0 });
 	Texture2D(const char* path);
+	~Texture2D();
 	unsigned int getID() const override;
 	void bind() const override;
 	void unbind();

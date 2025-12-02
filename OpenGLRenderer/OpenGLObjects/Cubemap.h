@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include "glad/glad.h"
 #include "OpenGLObjects/TextureBase.h"
 
@@ -10,6 +11,7 @@ class Cubemap : public TextureBase
 public:
 	Cubemap(GLenum format, int width, int height);
 	Cubemap(const char* path);
+	~Cubemap();
 
 	unsigned int getID() const override;
 	void bind() const override;

@@ -20,6 +20,7 @@ private:
 	std::unique_ptr<Renderer> m_renderer;
 	std::unique_ptr<PhysicsEngine> m_physicsEngine;
 	float m_deltaTime = 0;
+	float m_prevTime = 0;
 
 public:
 

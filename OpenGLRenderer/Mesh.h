@@ -34,21 +34,24 @@ struct Texture
 class Mesh 
 {
 	unsigned int m_VAO, m_VBO, m_EBO;
-	//std::vector<float> m_vertices;
-	//int m_faces;
-	std::vector<Vertex> m_vertices_;
+	std::vector<Vertex> m_vertices;
 	std::vector<unsigned int> m_indices;
 	std::vector<Texture> m_textures;
 	
 	
-	//void innitBuffers();
 	void innitMesh();
 
 	unsigned int loadTexture(const char*);
 
 public:
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-	//Mesh(std::vector<float> vertices, int faces = 6);
+	~Mesh();
+
+	Mesh(const Mesh&) = delete;
+	Mesh& operator=(const Mesh&) = delete;
+	Mesh(Mesh&& other) noexcept;
+	Mesh& operator=(Mesh&& other) noexcept;
+
 	void addTexture(Texture tex);
 	void draw(Shader& shader);
 	void Draw(Shader& shader);

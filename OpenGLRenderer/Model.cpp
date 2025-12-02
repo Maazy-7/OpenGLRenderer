@@ -6,6 +6,11 @@ Model::Model(const char* path)
 	loadModel(path);
 }
 
+Model::~Model() 
+{
+	std::cout << "Model Destroyed\n";
+}
+
 void Model::loadModel(std::string path) 
 {
 	Assimp::Importer importer;
@@ -195,7 +200,7 @@ void Model::addTexture(unsigned int id, textureType type, int index = 0)
 
 void Model::draw(Shader &shader) 
 {
-	for (Mesh m : m_meshes) 
+	for (Mesh& m : m_meshes) 
 	{
 		m.Draw(shader);
 	}

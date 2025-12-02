@@ -5,6 +5,7 @@ QuadRenderer::QuadRenderer()
     //quad which encompasses the whole screen
     glGenVertexArrays(1, &m_VAO);
     glGenBuffers(1, &m_VBO);
+    glBindVertexArray(m_VAO);
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), &m_vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);

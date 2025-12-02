@@ -23,6 +23,7 @@ class Model
 public:
 
 	Model(const char* path);
+	~Model();
 	void addTexture(unsigned int id, textureType type, int index);
 	void draw(Shader &shader);
 };

@@ -119,6 +119,11 @@ void Shader::createShader(GLenum shaderType, const char* shaderPath, unsigned in
 	}
 }
 
+Shader::~Shader() 
+{
+	glDeleteProgram(m_ID);
+}
+
 void Shader::use() 
 {
 	glUseProgram(m_ID);

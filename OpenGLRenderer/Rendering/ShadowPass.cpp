@@ -24,7 +24,7 @@ void ShadowPass::execute(const std::vector<std::unique_ptr<GameObject>>& gameObj
 			m_depthShader->setMatrix4f("lightSpaceMatrix", *shadowCasters[shadowCasterIndex]->getLightSpaceMatrix());
 			shadowCasters[shadowCasterIndex]->bindFBO();
 			glClear(GL_DEPTH_BUFFER_BIT);
-			for (size_t j = 0; j < lights.size(); j++) 
+			for (size_t j = 0; j < gameObjects.size(); j++) 
 			{
 				gameObjects[j]->renderDepth(*m_depthShader);
 			}
@@ -40,7 +40,7 @@ void ShadowPass::execute(const std::vector<std::unique_ptr<GameObject>>& gameObj
 			m_pointLightDepthShader->setVec3("lightPos", lights[i]->getPos());
 			shadowCasters[shadowCasterIndex]->bindFBO();
 			glClear(GL_DEPTH_BUFFER_BIT);
-			for (size_t j = 0; j < lights.size(); j++) 
+			for (size_t j = 0; j < gameObjects.size(); j++) 
 			{
 				gameObjects[j]->renderDepth(*m_pointLightDepthShader);
 			}

@@ -16,7 +16,7 @@ class Framebuffer
 public:
 
 	Framebuffer();
-	Framebuffer(Texture2D tex, GLenum texAttachment);
+	Framebuffer(Texture2D& tex, GLenum texAttachment);
 	Framebuffer(TextureBase* tex, GLenum texAttachment);
 	Framebuffer(std::vector<Texture2D> textures, GLenum attachment);
 	Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments);
@@ -25,15 +25,22 @@ public:
 	Framebuffer(std::vector<Texture2D> textures, GLenum texAttachment, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
 	Framebuffer(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments, GLenum renderBufferInternalFormat, GLenum renderBufferAttachment, int width = 800, int height = 600);
-	Framebuffer(Cubemap tex);
+	Framebuffer(Cubemap& tex);
 	Framebuffer(TextureBase* tex);
 
-	void attachTexture(Texture2D tex, GLenum texAttachment);
+	~Framebuffer();
+
+	//Framebuffer(const Framebuffer&) = delete;
+	//Framebuffer& operator=(const Framebuffer&) = delete;
+	//Framebuffer(Framebuffer&& other) noexcept;
+	//Framebuffer& operator=(Framebuffer&& other) noexcept;
+
+	void attachTexture(Texture2D& tex, GLenum texAttachment);
 	void attachTexture(TextureBase* tex, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, GLenum texAttachment);
 	void attachTextures(std::vector<Texture2D> textures, std::vector<GLenum> texAttachments);
 	void attachTextures(std::vector<Texture2D*> textures, std::vector<GLenum> texAttachments);
-	void attachTexture(Cubemap tex);
+	void attachTexture(Cubemap& tex);
 	void attachTexture(TextureBase* tex);
 	void attachRenderbuffer();
 

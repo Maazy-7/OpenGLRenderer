@@ -1,10 +1,11 @@
 #include "Core/Window.h"
 
 Window::Window(int width, int height, std::string name) 
+	: m_width(width), m_height(height)
 {
 	glfwInit();
-	glfwWindowHint(GLFW_VERSION_MAJOR, 3);//will add support for later versions 
-	glfwWindowHint(GLFW_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);//will add support for later versions 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	m_window = glfwCreateWindow(width, height, name.c_str(), NULL, NULL);
@@ -13,12 +14,13 @@ Window::Window(int width, int height, std::string name)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
+		exit(0);
 	}
 
 	glfwMakeContextCurrent(m_window);
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	
-	//if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return;
@@ -31,6 +33,11 @@ Window::Window(int width, int height, std::string name)
 	);
 }
 
+Window::~Window() 
+{
+	glfwTerminate();
+}
+
 glm::vec2 Window::getDimensions() 
 {
 	return glm::vec2((float)m_width, (float)m_height);
@@ -38,7 +45,7 @@ glm::vec2 Window::getDimensions()
 
 float Window::getAspect() 
 {
-	return (float)(m_width/m_height);
+	return (float) m_width/ (float)m_height;
 }
 
 GLFWwindow* Window::getWindow() 

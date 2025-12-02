@@ -5,8 +5,3 @@
 #define PRINTVEC2(v) std::cout << "(" << v.x << ", " << v.y << ")" << "\n";
 #define LOG(x) std::cout << x << std::endl;
 #define PRINTMAT4x4(m) PRINTVEC4(m[0]) PRINTVEC4(m[1]) PRINTVEC4(m[2]) PRINTVEC4(m[3]);
-
-float lerpf(float a, float b, float f) 
-{
-	return a + f * (b-a);
-}

@@ -2,31 +2,31 @@
 
 
 GameObject::GameObject(glm::vec3 position, Model* model, Camera* camera)
-	: m_transform(Transform(position)), m_rigidbody(Rigidbody(position, 1.0f)), m_collider(CubeCollider(position)), m_model(*model), m_camera(camera)
+	: m_transform(Transform(position)), m_rigidbody(Rigidbody(position, 1.0f)), m_collider(CubeCollider(position)), m_model(model), m_camera(camera)
 {
 
 }
 
 GameObject::GameObject(Transform* transform, CubeCollider* collider, Model* model, Camera* camera) 
-	: m_transform(*transform), m_collider(*collider), m_model(*model), m_camera(camera)
+	: m_transform(*transform), m_collider(*collider), m_model(model), m_camera(camera)
 {
 
 }
 
 GameObject::GameObject(Transform* transform, CubeCollider* collider, Model* model)
-	: m_transform(*transform), m_collider(*collider), m_model(*model), m_camera(nullptr)
+	: m_transform(*transform), m_collider(*collider), m_model(model), m_camera(nullptr)
 {
 
 }
 
 GameObject::GameObject(Transform* transform, Collider* collider, Model* model, Camera* camera)
-	: m_transform(*transform), M_collider(collider), m_model(*model), m_camera(camera)
+	: m_transform(*transform), M_collider(collider), m_model(model), m_camera(camera)
 {
 
 }
 
 GameObject::GameObject(Transform* transform, Collider* collider, Model* model)
-	: m_transform(*transform), M_collider(collider), m_model(*model), m_camera(nullptr)
+	: m_transform(*transform), M_collider(collider), m_model(model), m_camera(nullptr)
 {
 
 }
@@ -46,14 +46,14 @@ void GameObject::render(Shader& shader)
 	shader.setMatrix4f("model", m_transform.getTransformedMat());
 	//shader.setMatrix4f("view", m_camera->getView());
 	//shader.setMatrix4f("projection", m_camera->getProjection());
-	m_model.draw(shader);
+	m_model->draw(shader);
 }
 
 void GameObject::renderDepth(Shader& shader) 
 {
 	shader.use();
 	shader.setMatrix4f("model", m_transform.getTransformedMat());
-	m_model.draw(shader);
+	m_model->draw(shader);
 }
 
 void GameObject::attachCamera(Camera* camera)
@@ -64,7 +64,7 @@ void GameObject::attachCamera(Camera* camera)
 Transform& GameObject::transform() { return m_transform; }
 Rigidbody& GameObject::rigidbody() { return m_rigidbody; }
 CubeCollider& GameObject::collider() { return m_collider; }
-Model& GameObject::model() { return m_model; }
+Model* GameObject::model() { return m_model; }
 
 glm::vec3 GameObject::getPosition() { return m_transform.getPosition(); }
 glm::vec3 GameObject::getOrientation() { return m_transform.getOrientation(); } //returns euler angles

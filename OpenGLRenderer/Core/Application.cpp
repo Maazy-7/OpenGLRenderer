@@ -34,5 +34,8 @@ void Application::run()
 
 float Application::getDeltaTime() 
 {
-	return m_deltaTime = m_window->getTime() - m_deltaTime;
+	float currentTime = m_window->getTime();
+	m_deltaTime = currentTime - m_prevTime;
+	m_prevTime = currentTime;
+	return m_deltaTime;
 }

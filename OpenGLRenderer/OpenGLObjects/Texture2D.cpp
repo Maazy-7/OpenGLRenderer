@@ -22,6 +22,12 @@ Texture2D::Texture2D(GLenum internalFomrat, int width, int height, GLenum format
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+Texture2D::~Texture2D() 
+{
+	//glDeleteTextures(1, &m_texture);
+	std::cout << "Texture2D Destroyed\n";
+}
+
 unsigned int Texture2D::getID() const { return m_texture; }
 
 void Texture2D::bind() const { glBindTexture(GL_TEXTURE_2D, m_texture); }

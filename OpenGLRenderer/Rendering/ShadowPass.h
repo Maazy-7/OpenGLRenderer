@@ -18,6 +18,7 @@ private:
 	std::shared_ptr<Shader> m_depthShader;
 	std::shared_ptr<Shader> m_pointLightDepthShader;
 
-	int SHADOW_WIDTH, SHADOW_HEIGHT;
+	int SHADOW_WIDTH = 1024;
+	int SHADOW_HEIGHT = 1024;
 };
 

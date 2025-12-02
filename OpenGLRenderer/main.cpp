@@ -22,6 +22,9 @@
 #include "Physics/Collision/CubeCollider.h"
 #include "Physics/Components/GameObject.h"
 
+
+#include "Core/Application.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, float dt);
 unsigned int loadTexture(const char* path);
@@ -43,8 +46,18 @@ void renderQuad();
 void renderQuad(glm::vec2 size);
 bool hdr;
 
+float lerpf(float a, float b, float f) { return a + f * (b - a); }
+
 int main()
 {
+
+
+    Application app;
+    app.run();
+    return 0;
+
+
+
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -65,7 +78,7 @@ int main()
 
     Camera camera(window, glm::vec3(0.f, 0.f, 3.f), (float)SCR_WIDTH / (float)SCR_HEIGHT);
 
-
+    
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     
@@ -134,16 +147,16 @@ int main()
     Framebuffer depthFBO(depthMap);
 
     //hdr framebuffer, hdr texture and bloom texture
-    Texture2D colorBuffer1(GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_RGBA);
-    Texture2D colorBuffer2(GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_RGBA);
+    //Texture2D colorBuffer1(GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_RGBA);
+    //Texture2D colorBuffer2(GL_RGBA16F, SCR_WIDTH, SCR_HEIGHT, GL_RGBA);
 
-    Framebuffer hdrFBO({ colorBuffer1, colorBuffer2 }, {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1}, 
-        GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, SCR_WIDTH, SCR_HEIGHT);
+    //Framebuffer hdrFBO({ colorBuffer1, colorBuffer2 }, {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1}, 
+     //   GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, SCR_WIDTH, SCR_HEIGHT);
 
 
     //ping pong framebuffers and textures
-    Texture2D pingPongTextures[2] = { Texture2D(GL_RGBA16F, 960, 540, GL_RGBA), Texture2D(GL_RGBA16F, 960, 540, GL_RGBA) };
-    Framebuffer pingPongFBOs[2] = { Framebuffer(pingPongTextures[0], GL_COLOR_ATTACHMENT0), Framebuffer(pingPongTextures[1], GL_COLOR_ATTACHMENT0)};
+    //Texture2D pingPongTextures[2] = { Texture2D(GL_RGBA16F, 960, 540, GL_RGBA), Texture2D(GL_RGBA16F, 960, 540, GL_RGBA) };
+    //Framebuffer pingPongFBOs[2] = { Framebuffer(pingPongTextures[0], GL_COLOR_ATTACHMENT0), Framebuffer(pingPongTextures[1], GL_COLOR_ATTACHMENT0)};
 
 
     //gBuffer for deferred rendering
@@ -158,7 +171,7 @@ int main()
     Texture2D gAlbedo(GL_RGBA, SCR_WIDTH, SCR_HEIGHT, GL_RGBA, 0, GL_UNSIGNED_BYTE);
 
     //gBuffer framebuffer
-    Framebuffer gBuffer({ gPosition, gNormal, gAlbedo }, { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 }, 
+    Framebuffer gBuffer({ &gPosition, &gNormal, &gAlbedo }, { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 }, 
         GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT, SCR_WIDTH, SCR_HEIGHT);
 
     //ssao texture and framebuffer
@@ -260,10 +273,10 @@ int main()
     objects.push_back(&g1);
     objects.push_back(&g2);
     objects.push_back(&floor);
-    objects.push_back(&wall1);
-    objects.push_back(&wall2);
-    objects.push_back(&wall3);
-    objects.push_back(&wall4);
+    //objects.push_back(&wall1);
+    //objects.push_back(&wall2);
+    //objects.push_back(&wall3);
+    //objects.push_back(&wall4);
 
     CollisionManifold collisionInfo;
     //cubePos = g1.getPosition();
@@ -308,6 +321,7 @@ int main()
         glm::vec3(0.f, 1.f, 0.f) * 4.f,
         glm::vec3(0.f, 0.f, 1.f) * 4.f,
     };
+
 
     // render loop
     // -----------
