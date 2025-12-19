@@ -15,7 +15,7 @@ public:
 	
 private:
 	glm::vec3 m_position;
-	glm::vec4 m_colorAndType;//1 for directional light, 0 for spot light
+	glm::vec4 m_colorAndType;//1 for directional light, 0 for point light
 	bool m_castShadows;
 	int m_shadowListIndex;//used to index shadowCaster list
 };

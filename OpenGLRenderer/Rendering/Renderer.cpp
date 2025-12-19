@@ -45,8 +45,7 @@ void Renderer::update(Scene* scene)
     
     m_lightingPass->useLightingShader();
     bindGBufferTextures();
-    glActiveTexture(GL_TEXTURE3);
-    /*temp*/scene->getShadowCasters()[0]->bindShadowMap();
+    bindShadowMaps(scene);
     m_lightingPass->execute(scene->getLights(), scene->getCamera());
 }
 
@@ -91,4 +90,19 @@ void Renderer::bindGBufferTextures()
     m_gNormal->bind();
     glActiveTexture(GL_TEXTURE2);
     m_gAlbedoSpec->bind();
+}
+
+void Renderer::bindShadowMaps(Scene* scene) //should iterate through list of lights and bind shadow maps using texture/cubemap array, will eventually add this functionality
+{
+    int type = scene->getLights()[0]->getLightType();
+    if (type == 0)//point light
+    {
+        glActiveTexture(GL_TEXTURE3);
+        scene->getShadowCasters()[0]->bindShadowMap();
+    }
+    else if (type == 1)//directional light
+    {
+        glActiveTexture(GL_TEXTURE4);
+        scene->getShadowCasters()[0]->bindShadowMap();
+    }
 }

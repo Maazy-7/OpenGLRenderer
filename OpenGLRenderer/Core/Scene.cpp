@@ -22,7 +22,7 @@ Scene::Scene(Window* window)
 
 	m_gameObjects[2]->setScale(glm::vec3(7.5f, 0.2f, 7.5f));
 	m_gameObjects[2]->isStatic = true;
-	createLight(glm::vec3(1.f, 2.f, 1.f), glm::vec4(1.f,1.f,1.f,0.f)*3.f, true);
+	createLight(glm::vec3(3.f, 3.f, 1.f), glm::vec4(1.f,1.f,1.f,0.f)*3.f, true);
 }
 
 void Scene::update(float dt) 

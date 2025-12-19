@@ -22,6 +22,7 @@ public:
 	void bindGBuffer();
 	void unBindGBuffer();
 	void bindGBufferTextures();
+	void bindShadowMaps(Scene* scene);//currently only binds 1 shadow map
 
 private:
 	int m_screenWidth, m_screenHeight;

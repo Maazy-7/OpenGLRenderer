@@ -8,8 +8,9 @@ LightingPass::LightingPass(std::shared_ptr<Shader> shader)
 	m_lightingShader->setInt("gPosition", 0);
 	m_lightingShader->setInt("gNormal", 1);
 	m_lightingShader->setInt("gAlbedoSpec", 2);
-	m_lightingShader->setInt("cubeDepthMap", 3);
-	m_lightingShader->setInt("ssao", 4);
+	m_lightingShader->setInt("cubeDepthMap", 3);//point light shadow map
+	m_lightingShader->setInt("depthMap", 4);//directional light shadow map
+	m_lightingShader->setInt("ssao", 5);
 }
 
 void LightingPass::execute(const std::vector<std::unique_ptr<Light>>& lights, Camera* camera) 
@@ -25,8 +26,10 @@ void LightingPass::execute(const std::vector<std::unique_ptr<Light>>& lights, Ca
 		m_lightingShader->setVec3("lights[" + std::to_string(i) + "].color", lights[i]->getColor());
 		m_lightingShader->setFloat("lights[" + std::to_string(i) + "].linear", 0.09f);
 		m_lightingShader->setFloat("lights[" + std::to_string(i) + "].quadratic", 0.32f);
+		m_lightingShader->setInt("lights[" + std::to_string(i) + "].type", lights[i]->getLightType());
 	}
 	//TODO need a way to bind depth maps for each light, and also allow for the shader to support more than one cubemap
+	//Current implementation only supports 1 shadow map
 	m_LightPassQuad->renderQuad();
 }
 
