@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 
+#include "Physics/Core/PhysicsEngine.h"
 #include "Physics/Components/GameObject.h"
 #include "Rendering/Light.h"
 #include "Rendering/ShadowCaster.h"
@@ -16,7 +17,7 @@
 class Scene
 {
 public:
-	Scene(Window* window);
+	Scene(Window* window, PhysicsEngine* physicsEngine);
 	std::vector<std::unique_ptr<Light>>& getLights();
 	std::vector<Light*> getShadowCastingLights();
 	std::vector<std::unique_ptr<ShadowCaster>>& getShadowCasters();
@@ -33,5 +34,9 @@ private:
 	std::vector<std::unique_ptr<Model>> m_models;
 	std::vector<std::unique_ptr<Light>> m_lights;
 	std::vector<std::unique_ptr<ShadowCaster>> m_shadowCasters;
+
+	PhysicsEngine* m_physicsEngine;
+	
+	void addGameObject(std::unique_ptr<GameObject> gameObject);
 };
 

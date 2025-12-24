@@ -1,53 +1,68 @@
 #include "Physics/Collision/BoxCollider.h"
 
-BoxCollider::BoxCollider() 
-	: m_position(glm::vec3(0.f,0.f,0.f)), m_orientation(glm::quat(1.f,0.f,0.f,0.f)), m_scale(glm::vec3(1.f))
+BoxCollider::BoxCollider()
+	: m_halfExtents(glm::vec3(1.f))
 {
-
+	m_type = Box;
 }
 
-BoxCollider::BoxCollider(Transform transform)
-	: m_position(transform.getPosition()), m_orientation(transform.getOrientationQ())/*need to make this a get quaternion instead*/, m_scale(transform.getScale())
+BoxCollider::BoxCollider(glm::vec3 halfExtents)
+	: m_halfExtents(halfExtents)
 {
-
+	m_type = Box;
 }
 
-glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction)
+glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction, const Transform& transform)
 {
-	/*glm::vec3 maxPoint = glm::vec3(1.f);
-	float maxDistance = -FLT_MAX;
-	for (int i = 0; i < 8; i++)
-	{
-		float distance = glm::dot(direction, m_vertices[i]);
-		if (distance > maxDistance)
-		{
-			maxDistance = distance;
-			maxPoint = m_vertices[i];
-		}
-	}
-	return maxPoint;
-
-	or
-	*/
-	//returns vertex in local space
-
 	//rotating search direcition to local space
-	glm::vec3 localDirection = glm::transpose(glm::mat3_cast(m_orientation)) * direction;// R^-1 * direction -> R^T * direction, where R is the orientation of the collider
-	glm::vec3 localVertex = glm::vec3(localDirection.x > m_scale.x ? m_scale.x : -m_scale.x, localDirection.y > m_scale.y ? m_scale.y : -m_scale.y, localDirection.z > m_scale.z ? m_scale.z : -m_scale.z);
+	glm::vec3 localDirection = glm::conjugate(transform.getOrientationQuaternion()) * direction;// Q^-1 * direction where Q is the orientation of the collider/transform
+	glm::vec3 localVertex = glm::vec3(localDirection.x > 0 ? m_halfExtents.x : -m_halfExtents.x, localDirection.y > 0 ? m_halfExtents.y : -m_halfExtents.y, localDirection.z > 0 ? m_halfExtents.z : -m_halfExtents.z);
 	
 	//world space vertex
-	glm::vec3 worldVertex = m_position + m_orientation * localVertex;
+	glm::vec3 worldVertex = transform.getPosition() + transform.getOrientationQuaternion() * localVertex;
 	return worldVertex;
 }
 
-glm::vec3 BoxCollider::getPosition() { return m_position; }
-glm::quat BoxCollider::getOrientation() { return m_orientation; }
-glm::vec3 BoxCollider::getScale() { return m_scale; }
-
-void BoxCollider::updateCollider(Transform transform) 
+Face BoxCollider::getBestFace(const glm::vec3& normal, const Transform& transform) 
 {
-//updates collider position, orientation, and scale to the given transform's position, orientation and scale respectively
-	m_position = transform.getPosition();
-	m_orientation = transform.getOrientationQ();
-	m_scale = transform.getScale();
+	glm::vec3 localNormal = glm::conjugate(transform.getOrientationQuaternion()) * normal;
+	glm::vec3 absNormal = glm::abs(localNormal);
+	Face bestFace;
+
+    if (absNormal.x > absNormal.y && absNormal.x > absNormal.z) {
+        // X is dominant: Best face is either +X or -X
+        float sign = (localNormal.x > 0) ? 1.0f : -1.0f;
+        bestFace.m_normal = glm::vec3(sign, 0, 0);
+        bestFace.m_vertices[0] = glm::vec3(sign * m_halfExtents.x,  m_halfExtents.y,  m_halfExtents.z);
+        bestFace.m_vertices[1] = glm::vec3(sign * m_halfExtents.x, -m_halfExtents.y,  m_halfExtents.z);
+        bestFace.m_vertices[2] = glm::vec3(sign * m_halfExtents.x, -m_halfExtents.y, -m_halfExtents.z);
+        bestFace.m_vertices[3] = glm::vec3(sign * m_halfExtents.x,  m_halfExtents.y, -m_halfExtents.z);
+    }
+    else if (absNormal.y > absNormal.z) {
+        // Y is dominant
+        float sign = (localNormal.y > 0) ? 1.0f : -1.0f;
+        bestFace.m_normal = glm::vec3(0, sign, 0);
+        bestFace.m_vertices[0] = glm::vec3( m_halfExtents.x, sign * m_halfExtents.y,  m_halfExtents.z);
+        bestFace.m_vertices[1] = glm::vec3(-m_halfExtents.x, sign * m_halfExtents.y,  m_halfExtents.z);
+        bestFace.m_vertices[2] = glm::vec3(-m_halfExtents.x, sign * m_halfExtents.y, -m_halfExtents.z);
+        bestFace.m_vertices[3] = glm::vec3( m_halfExtents.x, sign * m_halfExtents.y, -m_halfExtents.z);
+    }
+    else {
+        // Z is dominant
+        float sign = (localNormal.z > 0) ? 1.0f : -1.0f;
+        bestFace.m_normal = glm::vec3(0, 0, sign);
+        bestFace.m_vertices[0] = glm::vec3( m_halfExtents.x,  m_halfExtents.y, sign * m_halfExtents.z);
+        bestFace.m_vertices[1] = glm::vec3(-m_halfExtents.x,  m_halfExtents.y, sign * m_halfExtents.z);
+        bestFace.m_vertices[2] = glm::vec3(-m_halfExtents.x, -m_halfExtents.y, sign * m_halfExtents.z);
+        bestFace.m_vertices[3] = glm::vec3( m_halfExtents.x, -m_halfExtents.y, sign * m_halfExtents.z);
+    }
+
+    //transforming face normal and vertices back to world space
+    bestFace.m_normal = transform.getOrientationQuaternion() * bestFace.m_normal;
+    for (int i = 0; i < 4; i++) 
+    {
+        bestFace.m_vertices[i] = transform.getPosition() + transform.getOrientationQuaternion() * bestFace.m_vertices[i];
+    }
+
+    return bestFace;
 }

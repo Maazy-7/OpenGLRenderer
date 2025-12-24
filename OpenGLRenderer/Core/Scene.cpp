@@ -1,6 +1,7 @@
 #include "Scene.h"
 
-Scene::Scene(Window* window) 
+Scene::Scene(Window* window, PhysicsEngine* physicsEngine)
+	: m_physicsEngine(physicsEngine)
 {
 //for now scene will be set and made in the constructor, will change to a scene manager system to load scenes from files
 	m_camera = std::make_unique<Camera>(window->getWindow(), glm::vec3(0.f,0.f,3.f), window->getAspect());
@@ -11,11 +12,17 @@ Scene::Scene(Window* window)
 
 	//very messy Game Object Creation and manipulation, will refactor later
 	m_models.push_back(std::make_unique<Model>("Assets/guy.obj"));
-	m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(-2.f, -0.3f, -4.f), m_models[0].get(), m_camera.get()));
+	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(-2.f, -0.3f, -4.f), m_models[0].get(), m_camera.get()));
+	
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(-2.f, -0.3f, -4.f)), m_models[0].get(), m_camera.get()));
 	
 	m_models.push_back(std::make_unique<Model>("Assets/brickThingy.obj"));
-	m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(2.f, 0.2f, 0.f), m_models[1].get(), m_camera.get()));
-	m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(0.f, -1.f, 0.f), m_models[1].get(), m_camera.get()));
+	
+	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(2.f, 0.2f, 0.f), m_models[1].get(), m_camera.get()));
+	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(0.f, -1.f, 0.f), m_models[1].get(), m_camera.get()));
+
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(2.f, 0.2f, 0.f)), m_models[1].get(), m_camera.get()));
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(0.f, -1.f, 0.f)), m_models[1].get(), m_camera.get()));
 
 	m_gameObjects[0]->rotate(glm::vec3(0.f, 0.f, -3.14f / 2.f));
 	m_gameObjects[0]->scale(glm::vec3(0.4f));
@@ -23,6 +30,7 @@ Scene::Scene(Window* window)
 	m_gameObjects[2]->setScale(glm::vec3(7.5f, 0.2f, 7.5f));
 	m_gameObjects[2]->isStatic = true;
 	createLight(glm::vec3(3.f, 3.f, 1.f), glm::vec4(1.f,1.f,1.f,0.f)*3.f, true);
+	
 }
 
 void Scene::update(float dt) 
@@ -74,6 +82,22 @@ std::vector<std::unique_ptr<ShadowCaster>>& Scene::getShadowCasters()
 std::vector<std::unique_ptr<GameObject>>& Scene::getGameObjects() 
 {
 	return m_gameObjects;
+}
+
+void Scene::addGameObject(std::unique_ptr<GameObject> gameObject) 
+{
+	m_gameObjects.push_back(std::move(gameObject));
+	
+	auto& currentObject = m_gameObjects.back();//the object which was just added to the gameobject list
+
+	if (currentObject->getRigidbody())
+	{
+		m_physicsEngine->addRigidBody(currentObject->getRigidbody());
+	}
+	if (currentObject->getCollider())
+	{
+		m_physicsEngine->addCollider(currentObject->getCollider());
+	}
 }
 
 void Scene::createLight(glm::vec3 position, glm::vec4 colorAndType, bool castShadows)

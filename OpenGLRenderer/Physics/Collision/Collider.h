@@ -5,14 +5,18 @@
 
 #include "Physics/Components/Transform.h"
 
+enum ColliderType 
+{
+	Sphere,
+	Capsule,
+	Box
+};
 
 class Collider
 {
+protected:
+	ColliderType m_type;
 public:
-	virtual glm::vec3 findFurthestPoint(const glm::vec3& direction) = 0;
-	virtual void updateCollider(Transform transform) = 0;
-	virtual glm::vec3 getPosition() = 0;
-	virtual glm::quat getOrientation() = 0;
-	virtual glm::vec3 getScale() = 0;
+	virtual glm::vec3 findFurthestPoint(const glm::vec3& direction, const Transform& transform) = 0;
 };
 

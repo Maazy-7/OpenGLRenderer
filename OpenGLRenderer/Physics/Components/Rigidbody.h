@@ -4,6 +4,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <utility>
 
+#include "Physics/Components/Transform.h"
+
 class Rigidbody 
 {
 private:
@@ -21,8 +23,11 @@ private:
 	glm::mat3 m_worldInvertia;
 	glm::mat3 m_invWorldInertia;
 
+	Transform* m_parentTransform;
 
-	float m_dt;//storing delta time for setting and getting velocity
+	float m_dt;//storing delta time for setting and getting 
+
+	void calculateInertia();
 
 public: 
 	

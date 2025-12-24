@@ -9,14 +9,14 @@
 
 struct Face
 {
-	std::array<int, 4> m_indices;
-	Face(int v1, int v2, int v3, int v4) { m_indices = {v1,v2,v3,v4}; }
+	std::array<glm::vec3, 4> m_vertices;
+	glm::vec3 m_normal;
 };
 
-class BoxCollider : Collider
+class BoxCollider : public Collider
 {
 private:
-	const std::array<glm::vec3, 8> m_vertices = {
+	/*const std::array<glm::vec3, 8> m_vertices = {
 	glm::vec3( 1.f, 1.f, 1.f),
 	glm::vec3( 1.f,-1.f, 1.f),
 	glm::vec3(-1.f,-1.f, 1.f),
@@ -43,22 +43,15 @@ private:
 	glm::vec3(-1.f, 0.f, 0.f),//left
 	glm::vec3( 0.f,-1.f ,0.f),//bottom
 	glm::vec3( 0.f, 1.f, 0.f)//top
-	};
+	};*/
 
-	glm::vec3 m_position;
-	glm::quat m_orientation;
-	glm::vec3 m_scale;
+	glm::vec3 m_halfExtents;
 
-	
 public:
 
 	BoxCollider();
-	BoxCollider(Transform transform);
-	glm::vec3 findFurthestPoint(const glm::vec3& direction) override;
-	glm::vec3 getPosition() override;
-	glm::quat getOrientation() override;
-	glm::vec3 getScale() override;
-
-	void updateCollider(Transform transform) override;
+	BoxCollider(glm::vec3 halfExtents);
+	glm::vec3 findFurthestPoint(const glm::vec3& direction, const Transform& transform) override;
+	Face getBestFace(const glm::vec3& normal, const Transform& transform);
 };
 

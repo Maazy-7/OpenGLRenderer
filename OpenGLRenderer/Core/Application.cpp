@@ -2,9 +2,9 @@
 
 Application::Application() 
 	: m_window(std::make_unique<Window>(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGLRenderer")),
-	m_scene(std::make_unique<Scene>(m_window.get())),//should be readable from file or scenes should be managed using a scene manager
 	m_renderer(std::make_unique<Renderer>(SCREEN_WIDTH, SCREEN_HEIGHT)),
-	m_physicsEngine(std::make_unique<PhysicsEngine>())
+	m_physicsEngine(std::make_unique<PhysicsEngine>()),
+	m_scene(std::make_unique<Scene>(m_window.get(),m_physicsEngine.get()))//should be readable from file or scenes should be managed using a scene manager
 {
 
 }

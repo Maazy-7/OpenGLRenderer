@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Physics/Components/Transform.h"
 #include "Physics/Components/Rigidbody.h"
 #include "Physics/Collision/Collider.h"
@@ -13,12 +15,17 @@ class GameObject
 {
 private:
 
-	Transform m_transform;
-	Rigidbody m_rigidbody;
-	CubeCollider m_collider;
-	Collider* M_collider;
+	Transform m_transform;//temp
+	Rigidbody m_rigidbody;//temp
+	CubeCollider m_collider;//temp
+
+	std::unique_ptr<Transform> M_transform;
+	std::unique_ptr<Rigidbody> M_rigidBody;
+	std::unique_ptr<Collider> M_collider;
+	
 	Model* m_model;
 	Camera* m_camera;
+
 public:
 
 	bool isStatic;//boolean for if object can or cant be moved, TEMPORARY
@@ -31,9 +38,16 @@ public:
 	
 	GameObject(glm::vec3 position, Model* model, Camera* camera);
 
-	Transform& transform();
-	Rigidbody& rigidbody();
-	CubeCollider& collider();
+	GameObject(std::unique_ptr<Transform> transform, std::unique_ptr<Collider> collider, std::unique_ptr<Rigidbody> rigidbody, Model* model, Camera* camera);
+	GameObject(std::unique_ptr<Transform> transform, Model* model, Camera* camera);
+	//GameObject(glm::vec3 position, Model* model, Camera* camera);
+
+	
+	CubeCollider& cCollider();
+	
+	Transform* getTransform();
+	Rigidbody* getRigidbody();
+	Collider* getCollider();
 	Model* model();
 
 	void attachCamera(Camera* camera);

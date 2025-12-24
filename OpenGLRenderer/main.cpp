@@ -367,11 +367,11 @@ int main()
             for (GameObject* obj2 : objects) 
             {
                 if (obj1 == obj2) { continue; }
-                auto [simplex, collision] = GJK(&obj1->collider(), &obj2->collider());
+                auto [simplex, collision] = GJK(&obj1->cCollider(), &obj2->cCollider());
 
                 if (collision)
                 {
-                    collisionInfo = EPA(simplex, &obj1->collider(), &obj2->collider());
+                    collisionInfo = EPA(simplex, &obj1->cCollider(), &obj2->cCollider());
                     glm::vec3 move = collisionInfo.normal * collisionInfo.depth / 2.f;
                     if (!obj1->isStatic) { obj1->movePosition(-move); }
                     if (!obj2->isStatic) {obj2->movePosition(move);}
