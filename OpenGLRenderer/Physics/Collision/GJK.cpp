@@ -38,9 +38,9 @@ glm::vec3 support(CubeCollider* colliderA, CubeCollider* colliderB, const glm::v
 	return colliderA->findFurthestPoint(direction) - colliderB->findFurthestPoint(-direction);
 }
 
-glm::vec3 support(Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB, const glm::vec3& direction)
+glm::vec3 support(Collider* colliderA, Collider* colliderB, const glm::vec3& direction)
 {
-	return colliderA->findFurthestPoint(direction, *transformA) - colliderB->findFurthestPoint(-direction, *transformB);
+	return colliderA->findFurthestPoint(direction) - colliderB->findFurthestPoint(-direction);
 }
 
 bool sameDirection(const glm::vec3& a, const glm::vec3& b) 
@@ -83,9 +83,9 @@ std::pair<Simplex, bool> GJK(CubeCollider* colliderA, CubeCollider* colliderB)
 	return { {}, false };
 }
 
-std::pair<Simplex, bool> GJK(Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB)
+std::pair<Simplex, bool> GJK(Collider* colliderA, Collider* colliderB)
 {
-	glm::vec3 supportPoint = support(colliderA, transformA, colliderB, transformB, transformB->getPosition() - transformA->getPosition()); //inital direction
+	glm::vec3 supportPoint = support(colliderA, colliderB, colliderB->getPosition() - colliderA->getPosition()); //inital direction
 	Simplex simplex;
 
 	simplex.pushToFront(supportPoint);
@@ -96,7 +96,7 @@ std::pair<Simplex, bool> GJK(Collider* colliderA, Transform* transformA, Collide
 
 	while (iterations++ < GJK_EPA_MAX_ITERATIONS)
 	{
-		supportPoint = support(colliderA, transformA, colliderB, transformB, direction);
+		supportPoint = support(colliderA, colliderB, direction);
 
 		//if new direction and support point dont have the same direction then shapes cant possible be colliding as a new support point past the origin does not exist
 
@@ -356,13 +356,13 @@ CollisionManifold EPA(Simplex simplex, CubeCollider* colliderA, CubeCollider* co
 
 
 	CollisionManifold collisionManifold;
-	collisionManifold.normal = minNormal;
-	collisionManifold.depth = minDistance + 0.001f;
+	collisionManifold.m_normal = minNormal;
+	collisionManifold.m_depth = minDistance + 0.001f;
 
 	return collisionManifold;
 }
 
-CollisionManifold EPA(Simplex simplex, Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB)
+CollisionManifold EPA(Simplex simplex, Collider* colliderA, Collider* colliderB)//normal points form A to B
 {
 	std::vector<glm::vec3> polytope(simplex.begin(), simplex.end());//the simplex is now a polytope as more points get added to it
 
@@ -387,7 +387,7 @@ CollisionManifold EPA(Simplex simplex, Collider* colliderA, Transform* transform
 			break;
 		}
 
-		glm::vec3 supportPoint = support(colliderA, transformA, colliderB, transformB, minNormal);//finding a new support point in the direction of the normal
+		glm::vec3 supportPoint = support(colliderA, colliderB, minNormal);//finding a new support point in the direction of the normal
 		float supportPointDistance = glm::dot(supportPoint, minNormal);
 
 		//checking to see if new support point is also the closest point in the polytope, if it is then the current normal and min distance
@@ -472,8 +472,8 @@ CollisionManifold EPA(Simplex simplex, Collider* colliderA, Transform* transform
 
 
 	CollisionManifold collisionManifold;
-	collisionManifold.normal = minNormal;
-	collisionManifold.depth = minDistance + 0.001f;
+	collisionManifold.m_normal = minNormal;
+	collisionManifold.m_depth = minDistance + 0.001f;
 
 	return collisionManifold;
 }

@@ -350,7 +350,7 @@ int main()
 
         // physics
         // -------
-        g1.movePosition(cubePos);
+        /*g1.movePosition(cubePos);
         cubePos = glm::vec3(0.f);
 
         //
@@ -372,12 +372,12 @@ int main()
                 if (collision)
                 {
                     collisionInfo = EPA(simplex, &obj1->cCollider(), &obj2->cCollider());
-                    glm::vec3 move = collisionInfo.normal * collisionInfo.depth / 2.f;
+                    glm::vec3 move = collisionInfo.m_normal * collisionInfo.m_depth / 2.f;
                     if (!obj1->isStatic) { obj1->movePosition(-move); }
                     if (!obj2->isStatic) {obj2->movePosition(move);}
                 }
             }
-        }
+        }*/
 
 
         //lightPositions[0].x = sin(glfwGetTime()) * 3.0f;

@@ -43,7 +43,7 @@ GameObject::GameObject(std::unique_ptr<Transform> transform, std::unique_ptr<Col
 
 GameObject::GameObject(std::unique_ptr<Transform> transform, Model* model, Camera* camera)
 	: M_transform(std::move(transform)), 
-	M_collider(std::make_unique<BoxCollider>(glm::vec3(1.f))),
+	M_collider(std::make_unique<BoxCollider>(glm::vec3(1.f), M_transform.get())),
 	M_rigidBody(std::make_unique<Rigidbody>(M_transform->getPosition(), 1.f)),
 	m_model(model),
 	m_camera(camera)

@@ -143,6 +143,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Physics\Collision\CapsuleCollider.cpp" />
+    <ClCompile Include="Physics\Core\CollisionDetectionSystem.cpp" />
+    <ClCompile Include="Physics\Collision\AABB.cpp" />
     <ClCompile Include="Core\Application.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Rendering\QuadRenderer.cpp" />
@@ -157,7 +160,6 @@
     <ClCompile Include="OpenGLObjects\Texture2D.cpp" />
     <ClCompile Include="Physics\Collision\BoxCollider.cpp" />
     <ClCompile Include="Physics\Collision\Collider.cpp" />
-    <ClCompile Include="Physics\Collision\CollisionManifold.cpp" />
     <ClCompile Include="Physics\Collision\CubeCollider.cpp" />
     <ClCompile Include="Physics\Collision\GJK.cpp" />
     <ClCompile Include="Physics\Components\GameObject.cpp" />
@@ -170,11 +172,15 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Rendering\ShadowPass.cpp" />
     <ClCompile Include="Rendering\ShadowCaster.cpp" />
+    <ClCompile Include="Physics\Collision\SphereCollider.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Core\Window.cpp" />
     <ClCompile Include="OpenGLObjects\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Physics\Collision\CapsuleCollider.h" />
+    <ClInclude Include="Physics\Core\CollisionDetectionSystem.h" />
+    <ClInclude Include="Physics\Collision\AABB.h" />
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="OpenGLObjects\TextureBase.h" />
@@ -204,6 +210,7 @@
     <ClInclude Include="Rendering\ShadowPass.h" />
     <ClInclude Include="Rendering\ShadowCaster.h" />
     <ClInclude Include="OpenGLObjects\UniformBuffer.h" />
+    <ClInclude Include="Physics\Collision\SphereCollider.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="Core\Window.h" />
   </ItemGroup>

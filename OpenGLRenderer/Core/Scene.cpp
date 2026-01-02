@@ -22,7 +22,7 @@ Scene::Scene(Window* window, PhysicsEngine* physicsEngine)
 	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(0.f, -1.f, 0.f), m_models[1].get(), m_camera.get()));
 
 	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(2.f, 0.2f, 0.f)), m_models[1].get(), m_camera.get()));
-	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(0.f, -1.f, 0.f)), m_models[1].get(), m_camera.get()));
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(0.f, -2.f, 0.f)), m_models[1].get(), m_camera.get()));
 
 	m_gameObjects[0]->rotate(glm::vec3(0.f, 0.f, -3.14f / 2.f));
 	m_gameObjects[0]->scale(glm::vec3(0.4f));
@@ -38,6 +38,8 @@ void Scene::update(float dt)
 	//currently not much but camera needs to be updated
 	m_camera->update(dt);
 	
+	
+	m_gameObjects[0]->movePosition(glm::vec3(0.5f,0.f,0.5f)*dt);
 	for (size_t i = 0; i < m_gameObjects.size(); i++) 
 	{
 		m_gameObjects[i]->update(dt);

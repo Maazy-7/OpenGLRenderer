@@ -3,29 +3,51 @@
 BoxCollider::BoxCollider()
 	: m_halfExtents(glm::vec3(1.f))
 {
-	m_type = Box;
+	m_type = ColliderType::Box;
 }
 
 BoxCollider::BoxCollider(glm::vec3 halfExtents)
 	: m_halfExtents(halfExtents)
 {
-	m_type = Box;
+	m_type = ColliderType::Box;
 }
 
-glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction, const Transform& transform)
+BoxCollider::BoxCollider(glm::vec3 halfExtents, Transform* transform)
+    : m_halfExtents(halfExtents)
+{
+    m_parentTransform = transform;
+    m_type = ColliderType::Box;
+}
+
+ColliderType BoxCollider::getType() const
+{
+    return m_type;
+}
+
+void BoxCollider::attachParentTransform(Transform* transform) 
+{
+    m_parentTransform = transform;
+}
+
+AABB BoxCollider::getAABB() const
+{
+    return m_colliderAABB;
+}
+
+glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction) const
 {
 	//rotating search direcition to local space
-	glm::vec3 localDirection = glm::conjugate(transform.getOrientationQuaternion()) * direction;// Q^-1 * direction where Q is the orientation of the collider/transform
+	glm::vec3 localDirection = glm::conjugate(m_parentTransform->getOrientationQuaternion()) * direction;// Q^-1 * direction where Q is the orientation of the collider/transform
 	glm::vec3 localVertex = glm::vec3(localDirection.x > 0 ? m_halfExtents.x : -m_halfExtents.x, localDirection.y > 0 ? m_halfExtents.y : -m_halfExtents.y, localDirection.z > 0 ? m_halfExtents.z : -m_halfExtents.z);
 	
 	//world space vertex
-	glm::vec3 worldVertex = transform.getPosition() + transform.getOrientationQuaternion() * localVertex;
+	glm::vec3 worldVertex = m_parentTransform->getPosition() + m_parentTransform->getOrientationQuaternion() * localVertex;
 	return worldVertex;
 }
 
-Face BoxCollider::getBestFace(const glm::vec3& normal, const Transform& transform) 
+Face BoxCollider::getBestFace(const glm::vec3& normal) 
 {
-	glm::vec3 localNormal = glm::conjugate(transform.getOrientationQuaternion()) * normal;
+	glm::vec3 localNormal = glm::conjugate(m_parentTransform->getOrientationQuaternion()) * normal;
 	glm::vec3 absNormal = glm::abs(localNormal);
 	Face bestFace;
 
@@ -58,11 +80,24 @@ Face BoxCollider::getBestFace(const glm::vec3& normal, const Transform& transfor
     }
 
     //transforming face normal and vertices back to world space
-    bestFace.m_normal = transform.getOrientationQuaternion() * bestFace.m_normal;
+    bestFace.m_normal = m_parentTransform->getOrientationQuaternion() * bestFace.m_normal;
     for (int i = 0; i < 4; i++) 
     {
-        bestFace.m_vertices[i] = transform.getPosition() + transform.getOrientationQuaternion() * bestFace.m_vertices[i];
+        bestFace.m_vertices[i] = m_parentTransform->getPosition() + m_parentTransform->getOrientationQuaternion() * bestFace.m_vertices[i];
     }
 
     return bestFace;
+}
+
+glm::vec3 BoxCollider::getHalfExtents() const 
+{
+    return m_halfExtents;
+}
+glm::vec3 BoxCollider::getPosition() const
+{
+    return m_parentTransform->getPosition();
+}
+glm::quat BoxCollider::getOrientation() const
+{
+    return m_parentTransform->getOrientationQuaternion();
 }

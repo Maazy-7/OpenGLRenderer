@@ -1,10 +1,14 @@
 #include "PhysicsEngine.h"
 
-PhysicsEngine::PhysicsEngine() {}
+PhysicsEngine::PhysicsEngine()
+{
+
+}
 
 void PhysicsEngine::step(float dt) 
 {
-
+	m_collisionManifolds.clear();
+	m_collisionDetectionSystem.checkCollisions(m_colliders, m_collisionManifolds);
 }
 
 void PhysicsEngine::addRigidBody(Rigidbody* rigidbody) 
@@ -15,4 +19,19 @@ void PhysicsEngine::addRigidBody(Rigidbody* rigidbody)
 void PhysicsEngine::addCollider(Collider* collider) 
 {
 	m_colliders.push_back(collider);
+}
+
+void PhysicsEngine::checkCollisions() 
+{
+	
+}
+
+void PhysicsEngine::broadPhase() 
+{
+
+}
+
+void PhysicsEngine::narrowPhase()
+{
+
 }

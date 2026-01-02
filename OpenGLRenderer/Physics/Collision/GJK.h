@@ -34,7 +34,7 @@ public:
 
 //helper functions for gjk
 glm::vec3 support(CubeCollider* colliderA, CubeCollider* colliderB, const glm::vec3& direction);
-glm::vec3 support(Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB, const glm::vec3& direction);
+glm::vec3 support(Collider* colliderA, Collider* colliderB, const glm::vec3& direction);
 bool sameDirection(const glm::vec3& a, const glm::vec3& b);
 
 //helper functions for EPA
@@ -46,9 +46,8 @@ void addUniqueEdge(std::vector<std::pair<size_t, size_t>>& edges, const std::vec
 
 std::pair<Simplex, bool> GJK(CubeCollider* colliderA, CubeCollider* colliderB);
 std::pair<Simplex, bool> GJK(Collider* colliderA, Collider* colliderB);
-std::pair<Simplex, bool> GJK(Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB);
 CollisionManifold EPA(Simplex simplex, CubeCollider* colliderA, CubeCollider* colliderB);
-CollisionManifold EPA(Simplex simplex, Collider* colliderA, Transform* transformA, Collider* colliderB, Transform* transformB);
+CollisionManifold EPA(Simplex simplex, Collider* colliderA, Collider* colliderB);
 
 //handles cases for the simplex
 bool nextSimplex(Simplex& simplex, glm::vec3& direction);
