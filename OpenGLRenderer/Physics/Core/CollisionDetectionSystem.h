@@ -3,6 +3,8 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <unordered_map>
+#include <utility>
 
 #include "util.h"
 #include "Physics/Collision/Collider.h"
@@ -24,6 +26,7 @@ class CollisionDetectionSystem
 
 	const float m_contactTolerance = 1e-6f;
 	const float m_contactSlop = 0.01f;
+	const float m_persistentContactThreshold = 0.02f;
 
 	void initCollisionDispatchTable();
 
@@ -36,6 +39,7 @@ class CollisionDetectionSystem
 
 	void solveBoxVsCapsuleContactPoints(BoxCollider* a, CapsuleCollider* b, CollisionManifold& collisionManifold);
 	void solveBoxVsBoxContactPoints(BoxCollider* a, BoxCollider* b, CollisionManifold& collisionManifold);//optomized for specifically Box vs Box
+	void matchContactPoints(CollisionManifold& newManifold, const CollisionManifold& oldManifold);
 
 	void clipPolygonAgainstPlane(std::vector<glm::vec3>& polygon, const Plane& plane);
 	std::vector<Plane> getFaceSidePlanes(const std::vector<glm::vec3> face, const glm::vec3& normal);
@@ -49,6 +53,7 @@ public:
 	CollisionDetectionSystem();
 
 	//TODO implement octree data structure for faster collision detection
-	void checkCollisions(const std::vector<Collider*>& colliders, std::vector<CollisionManifold>& collisionManifolds);
+	void checkCollisions(const std::vector<std::pair<Collider*, Collider*>>& collisionPairs, std::unordered_map<ManifoldKey, CollisionManifold, ManifoldKeyHash>& collisionManifolds);
+	void findPossibleCollisionPairs(const std::vector<Collider*>& colliders, std::vector<std::pair<Collider*, Collider*>>& collisionPairs);
 };
 

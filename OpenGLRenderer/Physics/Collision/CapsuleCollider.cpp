@@ -19,21 +19,6 @@ CapsuleCollider::CapsuleCollider(float radius, float height, Transform* transfor
 	m_type = ColliderType::Capsule;
 }
 
-ColliderType CapsuleCollider::getType() const
-{
-	return m_type;
-}
-
-void CapsuleCollider::attachParentTransform(Transform* transform)
-{
-	m_parentTransform = transform;
-}
-
-AABB CapsuleCollider::getAABB() const
-{
-	return m_colliderAABB;
-}
-
 glm::vec3 CapsuleCollider::findFurthestPoint(const glm::vec3& direction) const
 {
 	glm::vec3 p0 = getTopPoint();
@@ -44,6 +29,31 @@ glm::vec3 CapsuleCollider::findFurthestPoint(const glm::vec3& direction) const
 	return furthestPoint + glm::normalize(direction) * m_radius;
 }
 
+glm::vec3 CapsuleCollider::getDimensionsAsVec3() const 
+{
+	return glm::vec3(m_radius, 2.f * m_halfHeight, m_radius);
+}
+
+void CapsuleCollider::updateAABB() 
+{
+	glm::vec3 axis = getOrientation() * glm::vec3(0, 1, 0);
+	glm::vec3 p0 = getPosition() + m_halfHeight * axis;
+	glm::vec3 p1 = getPosition() - m_halfHeight * axis;
+
+	glm::vec3 maxPoint = glm::max(p0,p1);
+	glm::vec3 minPoint = glm::min(p0, p1);
+
+	m_colliderAABB.m_max = maxPoint + m_radius;
+	m_colliderAABB.m_min = minPoint - m_radius;
+}
+
+void CapsuleCollider::setColliderScale(glm::vec3 scale)
+{
+	//capsule by default points up
+	m_halfHeight = 0.5f * scale.y;
+	m_radius = glm::max(scale.x, scale.z);
+}
+
 glm::vec3 CapsuleCollider::getTopPoint() const 
 {
 	return m_parentTransform->getPosition() + m_parentTransform->getOrientationQuaternion() * glm::vec3(0.f, 1.f, 0.f) * m_halfHeight;
@@ -52,16 +62,6 @@ glm::vec3 CapsuleCollider::getTopPoint() const
 glm::vec3 CapsuleCollider::getBottomPoint() const
 {
 	return m_parentTransform->getPosition() - m_parentTransform->getOrientationQuaternion() * glm::vec3(0.f, 1.f, 0.f) * m_halfHeight;
-}
-
-glm::vec3 CapsuleCollider::getPosition() const 
-{
-	return m_parentTransform->getPosition();
-}
-
-glm::quat CapsuleCollider::getOrientation() const
-{
-	return m_parentTransform->getOrientationQuaternion();
 }
 
 float CapsuleCollider::getRadius() const 

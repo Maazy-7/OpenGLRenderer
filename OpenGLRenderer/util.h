@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 #define PRINTVEC4(v) std::cout << "(" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << ")" << "\n";
 #define PRINTVEC3(v) std::cout << "(" << v.x << ", " << v.y << ", " << v.z << ")" << "\n";

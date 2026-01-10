@@ -40,34 +40,97 @@ void CollisionDetectionSystem::initCollisionDispatchTable()
 		{ return capsuleVsCapsule(static_cast<CapsuleCollider*>(a), static_cast<CapsuleCollider*>(b), collisionManifold); }; //Capsule vs Capsule
 }
 
-void CollisionDetectionSystem::checkCollisions(const std::vector<Collider*>& colliders, std::vector<CollisionManifold>& collisionManifolds) 
+//broadphase collision detection
+void CollisionDetectionSystem::findPossibleCollisionPairs(const std::vector<Collider*>& colliders, std::vector<std::pair<Collider*, Collider*>>& collisionPairs)
 {
 	//collision check is currently O(N^2) with an AABB broadphase
 	//however soon and octree will be implmented to further improve the collision detection algorithm
-
-	CollisionManifold tempManifold;
-
-	for (size_t i = 0; i < colliders.size(); i++) 
+	for (int i = 0; i < colliders.size(); i++) 
 	{
 		Collider* colliderA = colliders[i];
-		for (size_t j = i + 1; j < colliders.size(); j++) 
+		for (int j = i + 1; j < colliders.size(); j++) 
 		{
 			Collider* colliderB = colliders[j];
-			if (colliderA == colliderB) { continue; }//skip identical colliders
-
-			if (!AABB::AABBIntersect(colliderA->getAABB(), colliderB->getAABB())) { continue; }
-
-			//collision function
-			auto collisionFunc = m_dispatchTable[(int)colliderA->getType()][(int)colliderB->getType()];
-
-			if (collisionFunc) 
+			if (AABB::AABBIntersect(colliderA->getAABB(), colliderB->getAABB()) ) 
 			{
-				if ( collisionFunc(colliderA, colliderB, tempManifold) ) 
-				{
-					collisionManifolds.push_back(tempManifold);
-					tempManifold.clearManifold();//emptying contact points and reseting normal and depth to 0
-				}
+				collisionPairs.push_back(std::make_pair(colliderA,colliderB));
 			}
+		}
+	}
+}
+
+
+//narrow phase collision detection on possible collision pairs from broadphase
+void CollisionDetectionSystem::checkCollisions(const std::vector<std::pair<Collider*, Collider*>>& collisionPairs, std::unordered_map<ManifoldKey, CollisionManifold, ManifoldKeyHash>& collisionManifolds)
+{
+	CollisionManifold tempManifold;
+	for (size_t i = 0; i < collisionPairs.size(); i++)
+	{
+		Collider* colliderA = collisionPairs[i].first;
+		Collider* colliderB = collisionPairs[i].second;
+
+		if (colliderA == colliderB) { continue; }//skip identical colliders
+		//collision function
+		auto collisionFunc = m_dispatchTable[(int)colliderA->getType()][(int)colliderB->getType()];
+
+		if (!collisionFunc) { std::cout << "Error selecting collision function\n"; continue; }//shouldn't happen
+
+		if (collisionFunc(colliderA, colliderB, tempManifold)) //collision has occured
+		{
+			ManifoldKey key(colliderA->getRigidbody()->getID(), colliderB->getRigidbody()->getID());
+
+			auto it = collisionManifolds.find(key);
+
+			if (it != collisionManifolds.end())//manifold for the current pair exist, so try and match its contacts 
+			{
+				matchContactPoints(tempManifold, it->second);
+			}
+
+			tempManifold.m_updatedInCurrentFrame = true;
+
+			collisionManifolds[key] = tempManifold;//if manifold for current pair doesn't exist then new one gets created
+			tempManifold.clearManifold();//emptying contact points and reseting normal and depth to 0
+
+		}
+	}
+	//clearing manifolds that weren't updated in the current frame as those pair aren't in collision anymore
+	for (auto it = collisionManifolds.begin(); it != collisionManifolds.end();) 
+	{
+		if (!it->second.m_updatedInCurrentFrame) //removing manifold
+		{
+			it = collisionManifolds.erase(it);
+		}
+		else //keeping manifold
+		{
+			it->second.m_updatedInCurrentFrame = false;
+			++it;
+		}
+	}
+}
+
+void CollisionDetectionSystem::matchContactPoints(CollisionManifold& newManifold, const CollisionManifold& oldManifold) 
+{
+	//currently uses position matching to match 2 contact points
+	
+	for (ContactPoint& newContact : newManifold.m_contactPoints) 
+	{
+		const ContactPoint* bestContact = nullptr;//this contact if it exists will match with the current contact
+		float bestDistSqr = m_persistentContactThreshold * m_persistentContactThreshold;
+		for (const ContactPoint& oldContact : oldManifold.m_contactPoints) 
+		{
+			float distSqr = glm::dot(newContact.position - oldContact.position, newContact.position - oldContact.position);
+			if (distSqr < bestDistSqr)
+			{
+				bestDistSqr = distSqr;
+				bestContact = &oldContact;
+			}
+		}
+		//set new contact's impulses to the old ones to warm start the contacts
+		if (bestContact) 
+		{
+			newContact.normalImpulse = bestContact->normalImpulse;
+			newContact.tangentImpulse[0] = bestContact->tangentImpulse[0];
+			newContact.tangentImpulse[1] = bestContact->tangentImpulse[1];
 		}
 	}
 }
@@ -99,7 +162,7 @@ bool CollisionDetectionSystem::boxVsSphere(BoxCollider* a, SphereCollider* b, Co
 	
 	//transforming contact point to world space
 	glm::vec3 closestPointWorld = a->getPosition() + a->getOrientation() * closestPointLocal;
-	float depth;
+	float depth = radius;//default only when degenerate case occurs
 
 	if (distance > 1e-6f) //sphere's center is outside the box's volume
 	{
@@ -112,7 +175,9 @@ bool CollisionDetectionSystem::boxVsSphere(BoxCollider* a, SphereCollider* b, Co
 		std::cout << "Box vs Sphere degenerate case occured\n";
 	}
 
-	collisionManifold.m_contactPoints.push_back({depth, closestPointWorld});
+	collisionManifold.m_contactPoints.push_back({closestPointWorld, depth});
+	collisionManifold.rigidbodyA = a->getRigidbody();
+	collisionManifold.rigidbodyB = b->getRigidbody();
 	return true;
 }
 
@@ -123,6 +188,8 @@ bool CollisionDetectionSystem::boxVsCapsule(BoxCollider* a, CapsuleCollider* b, 
 	{
 		CollisionManifold temp = EPA(simplex, a, b);
 		collisionManifold.m_normal = temp.m_normal;
+		collisionManifold.rigidbodyA = a->getRigidbody();
+		collisionManifold.rigidbodyB = b->getRigidbody();
 		//solveBoxVsCapsuleContactPoints(a, b, collisionManifold);
 		return true;
 	}
@@ -136,7 +203,10 @@ bool CollisionDetectionSystem::boxVsBox(BoxCollider* a, BoxCollider* b, Collisio
 	{
 		CollisionManifold temp = EPA(simplex, a, b);//normal from A to B
 		collisionManifold.m_normal = temp.m_normal;
+		collisionManifold.rigidbodyA = a->getRigidbody();
+		collisionManifold.rigidbodyB = b->getRigidbody();
 		solveBoxVsBoxContactPoints(a, b, collisionManifold);
+		return true;
 	}
 	return false;
 }
@@ -168,7 +238,9 @@ bool CollisionDetectionSystem::sphereVsCapsule(SphereCollider* a, CapsuleCollide
 	float depth = radiiSum - distance;
 	collisionManifold.m_normal = distance > 0.f ? direction / distance : glm::vec3(0.f, 1.f, 0.f);
 	glm::vec3 contactPoint = spherePos - collisionManifold.m_normal * a->getRadius();
-	collisionManifold.m_contactPoints.push_back({depth, contactPoint});
+	collisionManifold.m_contactPoints.push_back({contactPoint, depth});
+	collisionManifold.rigidbodyA = a->getRigidbody();
+	collisionManifold.rigidbodyB = b->getRigidbody();
 	return true;
 }
 
@@ -188,7 +260,9 @@ bool CollisionDetectionSystem::sphereVsSphere(SphereCollider* a, SphereCollider*
 	collisionManifold.m_normal = distance > 0.f ? direction / distance : glm::vec3(0.f, 1.f, 0.f);
 	//when 2 spheres collide only a singular contact point exists
 	glm::vec3 contactPoint = a->getPosition() + collisionManifold.m_normal * a->getRadius();
-	collisionManifold.m_contactPoints.push_back({depth, contactPoint});
+	collisionManifold.m_contactPoints.push_back({contactPoint, depth});
+	collisionManifold.rigidbodyA = a->getRigidbody();
+	collisionManifold.rigidbodyB = b->getRigidbody();
 	return true;
 }
 
@@ -218,7 +292,9 @@ bool CollisionDetectionSystem::capsuleVsCapsule(CapsuleCollider* a, CapsuleColli
 	glm::vec3 contact1 = point0 - collisionManifold.m_normal * a->getRadius();
 	glm::vec3 contact2 = point1 + collisionManifold.m_normal * b->getRadius();
 	glm::vec3 contactPoint = (point0 + point1) * 0.5f;
-	collisionManifold.m_contactPoints.push_back({ depth, contactPoint});
+	collisionManifold.m_contactPoints.push_back({ contactPoint, depth});
+	collisionManifold.rigidbodyA = a->getRigidbody();
+	collisionManifold.rigidbodyB = b->getRigidbody();
 	return true;
 }
 
@@ -333,7 +409,7 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 			float distance = glm::dot(clipNormal, contactPoint) - plane.distance;
 			if (distance <= m_contactSlop)
 			{
-				collisionManifold.m_contactPoints.push_back({-distance, contactPoint});
+				collisionManifold.m_contactPoints.push_back({contactPoint, -distance});
 			}
 		}
 	}
@@ -342,7 +418,7 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 	{
 		//since these are box vs box contact points, the 4 contacts with the largest depth are sufficient
 		std::sort(collisionManifold.m_contactPoints.begin(), collisionManifold.m_contactPoints.end(),
-			[](const ContactPoint& p1, const ContactPoint& p2) { return p1.m_depth > p2.m_depth; });//sorting in descending order
+			[](const ContactPoint& p1, const ContactPoint& p2) { return p1.depth > p2.depth; });//sorting in descending order
 
 		//since list is now sorted in descending order the first 4 contacts will be the maximum
 		collisionManifold.m_contactPoints = std::vector(collisionManifold.m_contactPoints.begin(), collisionManifold.m_contactPoints.begin() + 4);

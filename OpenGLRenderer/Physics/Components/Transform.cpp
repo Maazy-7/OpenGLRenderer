@@ -15,13 +15,13 @@ Transform::Transform(glm::vec3 position, glm::quat quaternion, glm::vec3 scale)
 Transform::Transform(glm::vec3 position)
 	: Transform(position, glm::vec3(0.0f), glm::vec3(1.f))
 {
-
+	
 }
 
 Transform::Transform()
 	: Transform(glm::vec3(0.f), glm::vec3(0.0f), glm::vec3(1.f))
 {
-	
+
 }
 
 
@@ -54,6 +54,9 @@ void Transform::updateTransform()
 
 void Transform::updateTransform(glm::vec3 position, glm::quat quaternion) 
 {
+	//PRINTVEC3(quaternion);
+	//PRINTVEC3(m_orientationQuaternion);
+	
 	m_position = position;
 	m_orientationQuaternion = quaternion;
 	m_orientation = glm::eulerAngles(quaternion);

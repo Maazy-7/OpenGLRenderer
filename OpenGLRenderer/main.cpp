@@ -248,19 +248,19 @@ int main()
 
     GameObject wall1(glm::vec3(7.5f, 1.8f, 0.f), &ourModel, &camera);
     wall1.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
-    wall1.isStatic = true;
+    //wall1.isStatic = true;
 
     GameObject wall2(glm::vec3(-7.5f, 1.8f, 0.f), &ourModel, &camera);
     wall2.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
-    wall2.isStatic = true;
+    //wall2.isStatic = true;
 
     GameObject wall3(glm::vec3(0.0f, 1.8f, 7.5f), &ourModel, &camera);
     wall3.setScale(glm::vec3(7.5f, 3.5f, 0.2f));
-    wall3.isStatic = true;
+    //wall3.isStatic = true;
 
     GameObject wall4(glm::vec3(7.5f, 1.8f, 0.f), &ourModel, &camera);
     wall4.setScale(glm::vec3(0.2f, 3.5f, 7.5f));
-    wall4.isStatic = true;
+    //wall4.isStatic = true;
 
     g1.rotate(glm::vec3(0.f, 0.f, -3.14f/2.f));
     g1.scale(glm::vec3(0.4f));
@@ -268,7 +268,7 @@ int main()
 
     GameObject floor(glm::vec3(0.f,-1.f,0.f),&ourModel, &camera);
     floor.setScale(glm::vec3(7.5f,0.2f,7.5f));
-    floor.isStatic = true;
+    //floor.isStatic = true;
 
     objects.push_back(&g1);
     objects.push_back(&g2);

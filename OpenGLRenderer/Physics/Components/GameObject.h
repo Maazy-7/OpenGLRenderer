@@ -19,6 +19,8 @@ private:
 	Rigidbody m_rigidbody;//temp
 	CubeCollider m_collider;//temp
 
+	uint32_t m_ID;
+
 	std::unique_ptr<Transform> M_transform;
 	std::unique_ptr<Rigidbody> M_rigidBody;
 	std::unique_ptr<Collider> M_collider;
@@ -28,7 +30,7 @@ private:
 
 public:
 
-	bool isStatic;//boolean for if object can or cant be moved, TEMPORARY
+	bool m_isStatic;//boolean for if object can or cant be moved, TEMPORARY
 	GameObject();
 	GameObject(Transform* transform, CubeCollider* collider, Model* model);
 	GameObject(Transform* transform, CubeCollider* collider, Model* model, Camera* camera);
@@ -55,10 +57,13 @@ public:
 	void render(Shader& shader);
 	void renderDepth(Shader& shader);
 
-	glm::vec3 getPosition();
-	glm::vec3 getOrientation();
-	glm::vec3 getScale();
-	glm::mat4 getTransformedMat();
+	glm::vec3 getPosition() const;
+	glm::vec3 getOrientation() const;
+	glm::vec3 getScale() const;
+	glm::mat4 getTransformedMat() const;
+
+	void setStatic(bool isStatic);
+	void setID(const uint32_t& ID);
 
 	void setAngularVelocity(glm::vec3 angularVelocity); //TEMPORARY
 

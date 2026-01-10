@@ -26,15 +26,11 @@ public:
 	BoxCollider(glm::vec3 halfExtents, Transform* transform);
 	
 	glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
-	ColliderType getType() const;
-	AABB getAABB() const;
+	void updateAABB() override;
+	void setColliderScale(glm::vec3 scale) override;
+	glm::vec3 getDimensionsAsVec3() const override;
 
 	Face getBestFace(const glm::vec3& normal);
-
 	glm::vec3 getHalfExtents() const;
-	glm::vec3 getPosition() const override;
-	glm::quat getOrientation() const override;//returns quaternion orientation
-
-	void attachParentTransform(Transform* transform) override;
 };
 

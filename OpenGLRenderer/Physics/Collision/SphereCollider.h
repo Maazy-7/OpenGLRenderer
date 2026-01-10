@@ -15,12 +15,9 @@ public:
 	SphereCollider(float radius, Transform* transform);
 
 	glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
-	ColliderType getType() const override;
-	AABB getAABB() const override;
+	void updateAABB() override;
+	void setColliderScale(glm::vec3 scale) override;
+	glm::vec3 getDimensionsAsVec3() const override;
 
 	float getRadius() const;
-	glm::vec3 getPosition() const override;
-	glm::quat getOrientation() const override;//returns a quaternion orientation
-
-	void attachParentTransform(Transform* transform) override;
 };

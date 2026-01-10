@@ -2,6 +2,11 @@
 
 #include <glm/glm.hpp>
 
+class Collider;
+class SphereCollider;
+class CapsuleCollider;
+class BoxCollider;
+
 class AABB
 {
 private:
@@ -18,5 +23,10 @@ public:
 	void updateAABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
 	static bool AABBIntersect(const AABB& aabb1, const AABB& aabb2);
+
+	friend Collider;
+	friend SphereCollider;
+	friend CapsuleCollider;
+	friend BoxCollider;
 };
 

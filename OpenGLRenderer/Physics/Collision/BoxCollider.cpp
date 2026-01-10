@@ -19,21 +19,6 @@ BoxCollider::BoxCollider(glm::vec3 halfExtents, Transform* transform)
     m_type = ColliderType::Box;
 }
 
-ColliderType BoxCollider::getType() const
-{
-    return m_type;
-}
-
-void BoxCollider::attachParentTransform(Transform* transform) 
-{
-    m_parentTransform = transform;
-}
-
-AABB BoxCollider::getAABB() const
-{
-    return m_colliderAABB;
-}
-
 glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction) const
 {
 	//rotating search direcition to local space
@@ -43,6 +28,35 @@ glm::vec3 BoxCollider::findFurthestPoint(const glm::vec3& direction) const
 	//world space vertex
 	glm::vec3 worldVertex = m_parentTransform->getPosition() + m_parentTransform->getOrientationQuaternion() * localVertex;
 	return worldVertex;
+}
+
+glm::vec3 BoxCollider::getDimensionsAsVec3() const 
+{
+    return 2.f * m_halfExtents;
+}
+
+void BoxCollider::updateAABB() 
+{
+    glm::mat3 R = glm::mat3_cast(getOrientation());//orientation matrix
+    for (int i = 0; i < 3; i++) 
+    {
+        R[i] = glm::abs(R[i]);
+    }
+
+    glm::vec3 worldSpaceExtents;
+
+    //gets max projection of half extents in certain direction
+    worldSpaceExtents.x = dot(R[0], m_halfExtents);
+    worldSpaceExtents.y = dot(R[1], m_halfExtents);
+    worldSpaceExtents.z = dot(R[2], m_halfExtents);
+
+    m_colliderAABB.m_max = getPosition() + worldSpaceExtents;
+    m_colliderAABB.m_min = getPosition() - worldSpaceExtents;
+}
+
+void BoxCollider::setColliderScale(glm::vec3 scale)
+{
+    m_halfExtents = scale * 0.5f;
 }
 
 Face BoxCollider::getBestFace(const glm::vec3& normal) 
@@ -92,12 +106,4 @@ Face BoxCollider::getBestFace(const glm::vec3& normal)
 glm::vec3 BoxCollider::getHalfExtents() const 
 {
     return m_halfExtents;
-}
-glm::vec3 BoxCollider::getPosition() const
-{
-    return m_parentTransform->getPosition();
-}
-glm::quat BoxCollider::getOrientation() const
-{
-    return m_parentTransform->getOrientationQuaternion();
 }

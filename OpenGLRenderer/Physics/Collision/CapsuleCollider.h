@@ -16,16 +16,13 @@ public:
 	CapsuleCollider(float radius, float height, Transform* transform);
 
 	glm::vec3 findFurthestPoint(const glm::vec3& direction) const override;
-	ColliderType getType() const;
-	AABB getAABB() const;
+	void updateAABB() override;
+	void setColliderScale(glm::vec3 scale) override;
+	glm::vec3 getDimensionsAsVec3() const override;
 
 	float getRadius() const;
 	float getHalfHeight() const;
 
 	glm::vec3 getTopPoint() const;
 	glm::vec3 getBottomPoint() const;
-	glm::vec3 getPosition() const override;
-	glm::quat getOrientation() const override;//returns a quaternion orientation
-
-	void attachParentTransform(Transform* transform) override;
 };

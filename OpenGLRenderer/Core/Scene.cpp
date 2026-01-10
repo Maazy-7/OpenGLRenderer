@@ -12,25 +12,17 @@ Scene::Scene(Window* window, PhysicsEngine* physicsEngine)
 
 	//very messy Game Object Creation and manipulation, will refactor later
 	m_models.push_back(std::make_unique<Model>("Assets/guy.obj"));
-	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(-2.f, -0.3f, -4.f), m_models[0].get(), m_camera.get()));
-	
-	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(-2.f, -0.3f, -4.f)), m_models[0].get(), m_camera.get()));
-	
 	m_models.push_back(std::make_unique<Model>("Assets/brickThingy.obj"));
 	
-	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(2.f, 0.2f, 0.f), m_models[1].get(), m_camera.get()));
-	//m_gameObjects.push_back(std::make_unique<GameObject>(glm::vec3(0.f, -1.f, 0.f), m_models[1].get(), m_camera.get()));
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(0.7f, 8.2f, 0.2f)), m_models[1].get(), m_camera.get()));
 
-	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(2.f, 0.2f, 0.f)), m_models[1].get(), m_camera.get()));
-	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(0.f, -2.f, 0.f)), m_models[1].get(), m_camera.get()));
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(2.f, -0.2f, 0.f)), m_models[1].get(), m_camera.get()));
+	addGameObject(std::make_unique<GameObject>(std::make_unique<Transform>(glm::vec3(-0.3f, -2.3f, 0.f)), m_models[1].get(), m_camera.get()));
 
-	m_gameObjects[0]->rotate(glm::vec3(0.f, 0.f, -3.14f / 2.f));
-	m_gameObjects[0]->scale(glm::vec3(0.4f));
-
-	m_gameObjects[2]->setScale(glm::vec3(7.5f, 0.2f, 7.5f));
-	m_gameObjects[2]->isStatic = true;
+	m_gameObjects[1]->setStatic(true);
+	m_gameObjects[2]->setScale(glm::vec3(7.5f, 1.2f, 7.5f));
+	m_gameObjects[2]->setStatic(true);
 	createLight(glm::vec3(3.f, 3.f, 1.f), glm::vec4(1.f,1.f,1.f,0.f)*3.f, true);
-	
 }
 
 void Scene::update(float dt) 
@@ -38,11 +30,9 @@ void Scene::update(float dt)
 	//currently not much but camera needs to be updated
 	m_camera->update(dt);
 	
-	
-	m_gameObjects[0]->movePosition(glm::vec3(0.5f,0.f,0.5f)*dt);
 	for (size_t i = 0; i < m_gameObjects.size(); i++) 
 	{
-		m_gameObjects[i]->update(dt);
+		//m_gameObjects[i]->update(dt);
 	}
 }
 
@@ -91,6 +81,7 @@ void Scene::addGameObject(std::unique_ptr<GameObject> gameObject)
 	m_gameObjects.push_back(std::move(gameObject));
 	
 	auto& currentObject = m_gameObjects.back();//the object which was just added to the gameobject list
+	currentObject->setID(m_gameObjectID++);//unique GameObject ID, also sets Rigidbody ID
 
 	if (currentObject->getRigidbody())
 	{

@@ -143,7 +143,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Physics\Core\ContactSolverSystem.cpp" />
     <ClCompile Include="Physics\Collision\CapsuleCollider.cpp" />
+    <ClCompile Include="Physics\Collision\CollisionManifold.cpp" />
     <ClCompile Include="Physics\Core\CollisionDetectionSystem.cpp" />
     <ClCompile Include="Physics\Collision\AABB.cpp" />
     <ClCompile Include="Core\Application.cpp" />
@@ -165,7 +167,6 @@
     <ClCompile Include="Physics\Components\GameObject.cpp" />
     <ClCompile Include="Physics\Components\Rigidbody.cpp" />
     <ClCompile Include="Physics\Components\Transform.cpp" />
-    <ClCompile Include="Physics\Core\DynamicsSolver.cpp" />
     <ClCompile Include="Physics\Core\PhysicsEngine.cpp" />
     <ClCompile Include="Rendering\Renderer.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="OpenGLObjects\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Physics\Core\ContactSolverSystem.h" />
     <ClInclude Include="Physics\Collision\CapsuleCollider.h" />
     <ClInclude Include="Physics\Core\CollisionDetectionSystem.h" />
     <ClInclude Include="Physics\Collision\AABB.h" />
@@ -201,7 +203,6 @@
     <ClInclude Include="Physics\Components\GameObject.h" />
     <ClInclude Include="Physics\Components\Rigidbody.h" />
     <ClInclude Include="Physics\Components\Transform.h" />
-    <ClInclude Include="Physics\Core\DynamicsSolver.h" />
     <ClInclude Include="Physics\Core\PhysicsEngine.h" />
     <ClInclude Include="Rendering\Renderer.h" />
     <ClInclude Include="Core\Scene.h" />

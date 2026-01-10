@@ -38,5 +38,7 @@ private:
 	PhysicsEngine* m_physicsEngine;
 	
 	void addGameObject(std::unique_ptr<GameObject> gameObject);
+
+	uint32_t m_gameObjectID = 0;
 };
 
