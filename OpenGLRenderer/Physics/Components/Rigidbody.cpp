@@ -50,6 +50,11 @@ uint32_t Rigidbody::getID() const
 	return m_ID;
 }
 
+bool Rigidbody::isStatic() const 
+{
+	return m_isStatic;
+}
+
 void Rigidbody::calculateInertia(ShapeType shapeType, const glm::vec3& dimensions) //dimensions could be w x h x l or radius and height or just radius 
 {
 	constexpr float oneOverTwelve = 1.f / 12.f;

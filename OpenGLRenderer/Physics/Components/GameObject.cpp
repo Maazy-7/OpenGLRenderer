@@ -39,6 +39,7 @@ GameObject::GameObject(std::unique_ptr<Transform> transform, std::unique_ptr<Col
 	m_camera(camera)
 {
 	M_collider->attachParentRigidBody(M_rigidBody.get());
+	M_collider->updateAABB();
 	M_rigidBody->attachParentTransform(M_transform.get());
 	M_rigidBody->calculateInertia(static_cast<ShapeType>((int)M_collider->getType()), M_collider->getDimensionsAsVec3());
 }
@@ -52,6 +53,7 @@ GameObject::GameObject(std::unique_ptr<Transform> transform, Model* model, Camer
 {
 	//default gameobject with box collider of size 1 (halfExtents of 0.5) rigid body with mass of 1
 	M_collider->attachParentRigidBody(M_rigidBody.get());
+	M_collider->updateAABB();
 	M_rigidBody->attachParentTransform(M_transform.get());
 	M_rigidBody->calculateInertia(static_cast<ShapeType>((int)M_collider->getType()), M_collider->getDimensionsAsVec3());
 }

@@ -37,6 +37,7 @@ public:
 	glm::quat getOrientation() const;//returns a quaternion orientation
 	void attachParentTransform(Transform* transform);
 	void attachParentRigidBody(Rigidbody* rigidBody);
+	bool isStatic() const;
 
 	//temp
 	glm::vec3 getAABBmax() const { return m_colliderAABB.m_max; }

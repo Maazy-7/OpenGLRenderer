@@ -96,7 +96,7 @@ void ContactSolverSystem::solveManifolds(CollisionManifold& manifold)
 	Rigidbody* bodyA = manifold.rigidbodyA;
 	Rigidbody* bodyB = manifold.rigidbodyB;
 	glm::vec3 normal = manifold.m_normal;
-	float mu = glm::sqrt(bodyA->m_frictionCoefficient + bodyB->m_frictionCoefficient);
+	float mu = glm::sqrt(bodyA->m_frictionCoefficient * bodyB->m_frictionCoefficient);
 
 	for (ContactPoint& contact : manifold.m_contactPoints) 
 	{
@@ -106,7 +106,7 @@ void ContactSolverSystem::solveManifolds(CollisionManifold& manifold)
 
 		glm::vec3 vRel = velB - velA;
 		float vn = glm::dot(vRel, normal);
-		
+
 		float lambda = -(vn + contact.bias) * contact.normalMass;
 		float old = contact.normalImpulse;
 		contact.normalImpulse = glm::max(old + lambda, 0.f);
@@ -120,6 +120,7 @@ void ContactSolverSystem::solveManifolds(CollisionManifold& manifold)
 			(bodyA->m_velocity + glm::cross(bodyA->m_angularVelocity, contact.rA));
 		
 		float maxFriction = mu * contact.normalImpulse;
+		
 		//friction constraints
 		for (int i = 0; i < 2; i++)
 		{

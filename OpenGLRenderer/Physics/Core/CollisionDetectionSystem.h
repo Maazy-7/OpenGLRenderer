@@ -24,7 +24,7 @@ class CollisionDetectionSystem
 {
 	std::function<bool(Collider* a, Collider* b, CollisionManifold& collisionManifold)> m_dispatchTable[(int)ColliderType::COUNT][(int)ColliderType::COUNT];
 
-	const float m_contactTolerance = 1e-6f;
+	const float m_contactTolerance = 0.02f;
 	const float m_contactSlop = 0.01f;
 	const float m_persistentContactThreshold = 0.02f;
 
@@ -41,9 +41,9 @@ class CollisionDetectionSystem
 	void solveBoxVsBoxContactPoints(BoxCollider* a, BoxCollider* b, CollisionManifold& collisionManifold);//optomized for specifically Box vs Box
 	void matchContactPoints(CollisionManifold& newManifold, const CollisionManifold& oldManifold);
 
-	void clipPolygonAgainstPlane(std::vector<glm::vec3>& polygon, const Plane& plane);
+	std::vector<glm::vec3> clipPolygonAgainstPlane(std::vector<glm::vec3>& polygon, const Plane& plane);
 	std::vector<Plane> getFaceSidePlanes(const std::vector<glm::vec3> face, const glm::vec3& normal);
-	std::vector<Plane> getOBBFaceSidePlanes(BoxCollider* refCollider, const Face& refFace);//optomized version for boxes
+	std::vector<Plane> getOBBFaceSidePlanes(BoxCollider* refCollider, const Face& refFace);
 
 	//finds 2 points on 2 different line segments which represent the shortest distance between the 2 lines
 	float getShortestDistanceBetweenTwoLineSegments(glm::vec3 ap0, glm::vec3 ap1, glm::vec3 bp0, glm::vec3 bp1, glm::vec3& outP0, glm::vec3& outP1);

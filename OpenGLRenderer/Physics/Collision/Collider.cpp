@@ -39,3 +39,8 @@ void Collider::attachParentRigidBody(Rigidbody* rigidbody)
 {
 	m_parentRigidBody = rigidbody;
 }
+
+bool Collider::isStatic() const 
+{
+	return m_parentRigidBody->isStatic();
+}

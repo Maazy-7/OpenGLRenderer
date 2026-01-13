@@ -25,7 +25,7 @@ class PhysicsEngine
 	CollisionDetectionSystem m_collisionDetectionSystem;
 	ContactSolverSystem m_contactSolverSystem;
 
-	const glm::vec3 m_gravity = glm::vec3(0.f,-1.f,0.f);
+	const glm::vec3 m_gravity = glm::vec3(0.f,-9.81f,0.f);
 
 public:
 
@@ -41,6 +41,7 @@ public:
 	void narrowPhase();
 	void solveContacts(float dt);
 	void integrateVelocities(float dt);
+	void positionCorrection();
 	void updateColliderAABBs();
 	void updateInertiaTensors();
 };

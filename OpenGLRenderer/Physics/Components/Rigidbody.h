@@ -69,6 +69,8 @@ public:
 	void setID(const uint32_t& ID);
 	uint32_t getID() const;
 
+	bool isStatic() const;
+
 	
 	void move(glm::vec3 position);//TEMPORARY
 

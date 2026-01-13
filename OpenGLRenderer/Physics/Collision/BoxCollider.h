@@ -30,7 +30,7 @@ public:
 	void setColliderScale(glm::vec3 scale) override;
 	glm::vec3 getDimensionsAsVec3() const override;
 
-	Face getBestFace(const glm::vec3& normal);
+	Face getBestFace(const glm::vec3& normal) const;
 	glm::vec3 getHalfExtents() const;
 };
 

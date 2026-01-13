@@ -56,10 +56,10 @@ void BoxCollider::updateAABB()
 
 void BoxCollider::setColliderScale(glm::vec3 scale)
 {
-    m_halfExtents = scale * 0.5f;
+    m_halfExtents = scale;
 }
 
-Face BoxCollider::getBestFace(const glm::vec3& normal) 
+Face BoxCollider::getBestFace(const glm::vec3& normal) const
 {
 	glm::vec3 localNormal = glm::conjugate(m_parentTransform->getOrientationQuaternion()) * normal;
 	glm::vec3 absNormal = glm::abs(localNormal);

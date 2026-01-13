@@ -51,6 +51,7 @@ void CollisionDetectionSystem::findPossibleCollisionPairs(const std::vector<Coll
 		for (int j = i + 1; j < colliders.size(); j++) 
 		{
 			Collider* colliderB = colliders[j];
+			if (colliderA->isStatic() && colliderB->isStatic()) { continue; }//skip collision check between 2 objects
 			if (AABB::AABBIntersect(colliderA->getAABB(), colliderB->getAABB()) ) 
 			{
 				collisionPairs.push_back(std::make_pair(colliderA,colliderB));
@@ -81,14 +82,18 @@ void CollisionDetectionSystem::checkCollisions(const std::vector<std::pair<Colli
 
 			auto it = collisionManifolds.find(key);
 
+			
 			if (it != collisionManifolds.end())//manifold for the current pair exist, so try and match its contacts 
 			{
+				//if (tempManifold.m_contactPoints.size() == 0) { tempManifold.m_contactPoints = it->second.m_contactPoints; }
 				matchContactPoints(tempManifold, it->second);
 			}
 
 			tempManifold.m_updatedInCurrentFrame = true;
 
 			collisionManifolds[key] = tempManifold;//if manifold for current pair doesn't exist then new one gets created
+
+			//TODO objects sinking during collision
 			tempManifold.clearManifold();//emptying contact points and reseting normal and depth to 0
 
 		}
@@ -198,7 +203,7 @@ bool CollisionDetectionSystem::boxVsCapsule(BoxCollider* a, CapsuleCollider* b, 
 
 bool CollisionDetectionSystem::boxVsBox(BoxCollider* a, BoxCollider* b, CollisionManifold& collisionManifold)
 {
-	auto [simplex, collide] = GJK(a, b);
+	auto [simplex, collide] = GJK(a, b);//TODO when objects have same size, x and z positions objects don't collide
 	if (collide)
 	{
 		CollisionManifold temp = EPA(simplex, a, b);//normal from A to B
@@ -392,13 +397,15 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 
 	//polygon that will get clipped against the reference face's side planes, will start as the incident face
 	std::vector<glm::vec3> clipPolygon = std::vector(std::begin(incidentFace.m_vertices), std::end(incidentFace.m_vertices));//Face struct for box collider stores only 4 vertices
-
+	
+	
+	//LOG("clipping start");
 	for (Plane& plane : referenceFaceSidePlanes) 
 	{
-		clipPolygonAgainstPlane(clipPolygon, plane);
+		clipPolygon = clipPolygonAgainstPlane(clipPolygon, plane);
 		if (clipPolygon.empty()) { break; }
-	}
-
+	}	
+	//LOG("clipping end");
 	//clippedPolygon now stores all possible contact points
 	//however only the points behind the refernce face will be considered actual contact points
 	if (!clipPolygon.empty())
@@ -413,7 +420,7 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 			}
 		}
 	}
-
+	LOG(collisionManifold.m_contactPoints.size());
 	if (collisionManifold.m_contactPoints.size() > 4)//reducing number of contact points to 4
 	{
 		//since these are box vs box contact points, the 4 contacts with the largest depth are sufficient
@@ -429,9 +436,9 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 	}
 }
 
-void CollisionDetectionSystem::clipPolygonAgainstPlane(std::vector<glm::vec3>& polygon, const Plane& plane) //Sutherland Hodgman clipping Algorithm
+std::vector<glm::vec3> CollisionDetectionSystem::clipPolygonAgainstPlane(std::vector<glm::vec3>& polygon, const Plane& plane) //Sutherland Hodgman clipping Algorithm
 {
-	if (polygon.empty()) { return; }
+	if (polygon.empty()) { return polygon; }
 	std::vector<glm::vec3> out;
 	int size = polygon.size();
 	for (int i = 0; i < size; i++) 
@@ -461,40 +468,35 @@ void CollisionDetectionSystem::clipPolygonAgainstPlane(std::vector<glm::vec3>& p
 		}
 		//if no points are inside the plane then don't add any points
 	}
-	polygon = out;
+	return out;
 }
 
-std::vector<Plane> CollisionDetectionSystem::getOBBFaceSidePlanes(BoxCollider* refCollider, const Face& refFace) //optomized version for boxes
+std::vector<Plane> CollisionDetectionSystem::getOBBFaceSidePlanes(BoxCollider* refCollider, const Face& refFace)
 {
-	glm::quat orientation = refCollider->getOrientation();
-	glm::vec3 halfExtents = refCollider->getHalfExtents();
-	glm::vec3 colliderPos = refCollider->getPosition();
-
-
-	glm::vec3 worldsAxis[3];
-	worldsAxis[0] = orientation * glm::vec3(1.f, 0.f, 0.f);
-	worldsAxis[1] = orientation * glm::vec3(0.f, 1.f, 0.f);
-	worldsAxis[2] = orientation * glm::vec3(0.f, 0.f, 1.f);
-
-	//need to get the axis that is most aligned with the reference face's normal
-	int normalAxisIndex = 0;//indexes the world space axis list
-	float maxDot = -1.f;
-	for (int i = 0; i < 3; i++) 
-	{
-		float d = glm::abs(glm::dot(worldsAxis[i], refFace.m_normal));
-		if (d > maxDot) { maxDot = d; normalAxisIndex = i; }
-	}
-
-	//the other 2 axis represent the side planes
-	int axis1Index = (normalAxisIndex + 1) % 3;
-	int axis2Index = (normalAxisIndex + 2) % 3;
-	
 	std::vector<Plane> sidePlanes;
 
-	//the 4 side planes
-	sidePlanes.push_back({ worldsAxis[axis1Index], glm::dot(worldsAxis[axis1Index] , colliderPos + worldsAxis[axis1Index] * halfExtents[axis1Index])});
-	sidePlanes.push_back({ -worldsAxis[axis1Index], glm::dot(-worldsAxis[axis1Index] , colliderPos - worldsAxis[axis1Index] * halfExtents[axis1Index]) });
-	sidePlanes.push_back({ worldsAxis[axis2Index], glm::dot(worldsAxis[axis2Index] , colliderPos + worldsAxis[axis2Index] * halfExtents[axis2Index]) });
-	sidePlanes.push_back({ -worldsAxis[axis2Index], glm::dot(-worldsAxis[axis2Index] , colliderPos - worldsAxis[axis2Index] * halfExtents[axis2Index]) });
+	glm::vec3 faceCenter(0.0f);
+	for (int i = 0; i < 4; i++)
+	{
+		faceCenter += refFace.m_vertices[i];
+	}
+	faceCenter *= 0.25f;
+
+	for (int i = 0; i < 4; i++)
+	{
+		glm::vec3 a = refFace.m_vertices[i];
+		glm::vec3 b = refFace.m_vertices[(i + 1) % 4];
+
+		glm::vec3 edge = b - a;
+		glm::vec3 normal = glm::normalize(glm::cross(edge, refFace.m_normal));
+
+		//ensures side plane normal is facing the right direction
+		if (glm::dot(normal, faceCenter - a) > 0.0f)
+		{		
+			normal = -normal;
+		}
+
+		sidePlanes.push_back({normal, glm::dot(a, normal)});
+	}
 	return sidePlanes;
 }
