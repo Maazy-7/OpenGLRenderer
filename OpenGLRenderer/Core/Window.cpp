@@ -38,17 +38,17 @@ Window::~Window()
 	glfwTerminate();
 }
 
-glm::vec2 Window::getDimensions() 
+glm::vec2 Window::getDimensions() const
 {
 	return glm::vec2((float)m_width, (float)m_height);
 }
 
-float Window::getAspect() 
+float Window::getAspect() const
 {
 	return (float) m_width/ (float)m_height;
 }
 
-GLFWwindow* Window::getWindow() 
+GLFWwindow* Window::getWindow() const
 {
 	return m_window;
 }
@@ -68,7 +68,7 @@ void Window::update()
 
 }
 
-float Window::getTime() 
+float Window::getTime() const
 {
 	return (float)glfwGetTime();
 }
@@ -82,4 +82,14 @@ void Window::setWindowScrollCallBack(Camera* camera)
 		});
 }
 
+void Window::setKeyCallback(void (*keyCallback)(GLFWwindow*, int, int, int, int))
+{
+	glfwSetKeyCallback(m_window, keyCallback);
+}
+
 bool Window::windowClose() { return glfwWindowShouldClose(m_window); }
+
+void Window::setWindowShouldClose(int close) 
+{
+	glfwSetWindowShouldClose(m_window, close);
+}

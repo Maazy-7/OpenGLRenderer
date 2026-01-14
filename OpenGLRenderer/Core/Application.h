@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Core/Window.h"
+#include "Core/InputManager.h"
 #include "Physics/Core/PhysicsEngine.h"
 #include "Rendering/Renderer.h"
 #include "Core/Scene.h"

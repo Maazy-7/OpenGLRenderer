@@ -5,13 +5,14 @@
 
 #include <glm/glm.hpp>
 
+#include "Core/Window.h"
+#include "Core/InputManager.h"
 #include "Physics/Core/PhysicsEngine.h"
 #include "Physics/Components/GameObject.h"
 #include "Rendering/Light.h"
 #include "Rendering/ShadowCaster.h"
 #include "Camera.h"
 #include "Model.h"
-#include "Core/Window.h"
 
 
 class Scene

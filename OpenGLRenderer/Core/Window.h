@@ -17,19 +17,19 @@ public:
 	~Window();
 
 	void update();
-	glm::vec2 getDimensions();
-	GLFWwindow* getWindow();
+	glm::vec2 getDimensions() const;
+	GLFWwindow* getWindow() const;
 	void swapBuffers();
 	void pollEvents();
 	void setWindowScrollCallBack(Camera* camera);
-	float getAspect();
-	float getTime();
+	void setKeyCallback(void (*keyCallback)(GLFWwindow*,int,int,int, int));
+	float getAspect() const;
+	float getTime() const;
 	bool windowClose();
+	void setWindowShouldClose(int close);
 
 	
 private:
 	int m_width, m_height;
 	GLFWwindow* m_window = nullptr;
-
-
 };

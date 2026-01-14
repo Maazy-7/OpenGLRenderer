@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
+    <ClCompile Include="Core\InputManager.cpp" />
     <ClCompile Include="Physics\Core\ContactSolverSystem.cpp" />
     <ClCompile Include="Physics\Collision\CapsuleCollider.cpp" />
     <ClCompile Include="Physics\Collision\CollisionManifold.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="OpenGLObjects\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\InputManager.h" />
     <ClInclude Include="Physics\Core\ContactSolverSystem.h" />
     <ClInclude Include="Physics\Collision\CapsuleCollider.h" />
     <ClInclude Include="Physics\Core\CollisionDetectionSystem.h" />

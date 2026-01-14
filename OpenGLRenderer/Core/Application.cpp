@@ -6,23 +6,22 @@ Application::Application()
 	m_physicsEngine(std::make_unique<PhysicsEngine>()),
 	m_scene(std::make_unique<Scene>(m_window.get(),m_physicsEngine.get()))//should be readable from file or scenes should be managed using a scene manager
 {
-
+	m_window->setKeyCallback(InputManager::keyCallback);
 }
 
 void Application::run() 
 {
 	while (!m_window->windowClose())
 	{
-		if (glfwGetKey(m_window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)//temporary
-			glfwSetWindowShouldClose(m_window->getWindow(), true);
+		if (InputManager::getKey(GLFW_KEY_ESCAPE)) { m_window->setWindowShouldClose(true); }
 
 		float dt = getDeltaTime();
 
 		m_window->pollEvents();
 
-		//input checker here
-
 		m_scene->update(dt);
+
+		InputManager::update();
 
 		m_physicsEngine->step(dt);
 

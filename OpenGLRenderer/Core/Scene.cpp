@@ -41,7 +41,7 @@ Scene::Scene(Window* window, PhysicsEngine* physicsEngine)
 	
 	m_gameObjects[5]->setScale(glm::vec3(10.f, 5.f, 0.5f));
 	m_gameObjects[5]->setStatic(true);
-	createLight(glm::vec3(0.f, 1.f, 0.f), glm::vec4(1.f,1.f,1.f,0.f)*8.f, true);
+	createLight(glm::vec3(0.f, 0.8f, 0.f), glm::vec4(1.f,1.f,1.f,0.f)*8.f, true);
 }
 
 void Scene::update(float dt) 
@@ -49,6 +49,11 @@ void Scene::update(float dt)
 	//currently not much but camera needs to be updated
 	m_camera->update(dt);
 	
+	if (InputManager::getKeyDown(GLFW_KEY_ESCAPE)) 
+	{
+		LOG("pressed");
+	}
+
 	for (size_t i = 0; i < m_gameObjects.size(); i++) 
 	{
 		//m_gameObjects[i]->update(dt);
