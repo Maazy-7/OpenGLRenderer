@@ -420,7 +420,7 @@ void CollisionDetectionSystem::solveBoxVsBoxContactPoints(BoxCollider* a, BoxCol
 			}
 		}
 	}
-	LOG(collisionManifold.m_contactPoints.size());
+	//LOG(collisionManifold.m_contactPoints.size());
 	if (collisionManifold.m_contactPoints.size() > 4)//reducing number of contact points to 4
 	{
 		//since these are box vs box contact points, the 4 contacts with the largest depth are sufficient
